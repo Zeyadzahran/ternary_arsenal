@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'country_id',   
+        'role',         
     ];
 
     /**
@@ -45,4 +46,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+   
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+   
+
 }
