@@ -52,6 +52,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Country::class);
     }
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
     public function inventories()
     {
         return $this->hasMany(Inventory::class);
