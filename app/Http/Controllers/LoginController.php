@@ -32,9 +32,8 @@ class LoginController extends Controller
             ])->withInput();
         }
         Auth::login($user);
-        dd($user);
         $request->session()->regenerate();
 
-        // return redirect()->intended('/home');
+      return redirect()->intended('/home')->with('success', 'Login successful');
     }
 }

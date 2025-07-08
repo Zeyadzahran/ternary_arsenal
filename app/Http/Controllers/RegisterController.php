@@ -25,8 +25,8 @@ class RegisterController extends Controller
             'role' => 'general'
         ]);
 
-        Auth::login($user);
-        dd($user);
-        // return redirect('/home')->with('success', 'Registration successful!');
+        
+         return redirect('/login')->with('success', 'Registration successful please Login!');
+
     }
 }
