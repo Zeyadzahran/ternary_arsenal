@@ -111,6 +111,13 @@
 <body>
     <div class="form-box">
     <h2>Login</h2>
+    
+   @if(session('success'))
+    <div id="success-message" style="background-color: #d4edda; color: #155724; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center;">
+        {{ session('success') }}
+    </div>
+   @endif
+
     <form method="POST" action="/login">
       @csrf
 
@@ -132,4 +139,15 @@
   
 
 </body>
+<script>
+  setTimeout(() => {
+    const message = document.getElementById('success-message');
+    if (message) {
+      message.style.transition = 'opacity 0.5s ease';
+      message.style.opacity = '0';
+      setTimeout(() => message.remove(), 500);   
+    }
+  }, 3000);
+</script>
+
 </html>
