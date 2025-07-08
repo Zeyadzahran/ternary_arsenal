@@ -83,19 +83,58 @@
     background: linear-gradient(to right, #ff1a1a, #ff6600);
     color: #000;
   }
+  .error {
+    color:rgb(15, 1, 1);
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 2px;
+  }
+  .have-account {
+  text-align: center;
+  font-size: 1.05rem;
+  margin-top: 25px;
+  color: #ddd;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.have-account a {
+  color:rgb(255, 180, 68);
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 5px;
+  transition: color 0.3s ease;
+}
+
+.have-account a:hover {
+  color:rgb(197, 157, 113);
+}
 </style>
 
 <div class="form-box">
   <h2>Register</h2>
   <form method="POST" action="/register">
+    @csrf 
+
     <label for="name">Your Name</label>
     <input type="text" id="name" name="name" required>
+
+    @error('name')
+      <p class="error"> {{ $message }} </p>
+    @enderror
 
     <label for="email">Your Email</label>
     <input type="email" id="email" name="email" required>
 
+    @error('email')
+      <p class="error"> {{ $message }} </p>
+    @enderror
+
     <label for="password">Password</label>
-    <input type="password" id="password" name="password" required>
+    <input type="password" id="password" name="password" requied>
+
+    @error('password')
+      <p class="error"> {{ $message }} </p>
+    @enderror
 
     <label for="password_confirmation">Re-enter Password</label>
     <input type="password" id="password_confirmation" name="password_confirmation" required>
@@ -103,29 +142,37 @@
     <label for="country">Country</label>
     <select id="country" name="country" required>
       <option value="">Select your country</option>
-      <option value="germany">Germany</option>
-      <option value="italy">Italy</option>
-      <option value="japan">Japan</option>
-      <option value="hungary">Hungary</option>
-      <option value="romania">Romania</option>
-      <option value="bulgaria">Bulgaria</option>
-      <option value="uk">United Kingdom</option>
-      <option value="usa">USA</option>
-      <option value="ussr">Soviet Union</option>
-      <option value="france">France</option>
-      <option value="china">China</option>
-      <option value="canada">Canada</option>
-      <option value="australia">Australia</option>
-      <option value="new-zealand">New Zealand</option>
-      <option value="india">India</option>
-      <option value="switzerland">Switzerland</option>
-      <option value="sweden">Sweden</option>
-      <option value="spain">Spain</option>
-      <option value="portugal">Portugal</option>
-      <option value="turkey">Turkey</option>
-
+      <option value="1">Germany</option>
+      <option value="2">Italy</option>
+      <option value="3">Japan</option>
+      <option value="4">Hungary</option>
+      <option value="5">Romania</option>
+      <option value="6">Bulgaria</option>
+      <option value="7">United Kingdom</option>
+      <option value="8">USA</option>
+      <option value="9">Soviet Union</option>
+      <option value="10">France</option>
+      <option value="11">China</option>
+      <option value="12">Canada</option>
+      <option value="13">Australia</option>
+      <option value="14">New Zealand</option>
+      <option value="15">India</option>
+      <option value="16">Switzerland</option>
+      <option value="17">Sweden</option>
+      <option value="18">Spain</option>
+      <option value="19">Portugal</option>
+      <option value="20">Turkey</option>
     </select>
 
+    @error('country')
+      <p class="error"> {{ $message }} </p>
+    @enderror
+
     <button type="submit">Register</button>
+
+    <div class="have-account">
+      Already have an account ? 
+      <a href="/login"> Log in </a>
+    </div>
   </form>
 </div>
