@@ -37,10 +37,14 @@
 
         </div>
         <div>
-            <a href="/">Logout</a>
+            <form method  = "POST" action = "logout">
+                @csrf
+                <button>log out </button>
+            </form>
+            
         </div>
     </div>
 
-    <h1>Homeeeeeeeeee</h1>
+    <h1>Her we will Impelment the Shop logic </h1>
 </body>
 </html>

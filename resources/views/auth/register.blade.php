@@ -142,26 +142,9 @@
     <label for="country">Country</label>
     <select id="country" name="country" required>
       <option value="">Select your country</option>
-      <option value="1">Germany</option>
-      <option value="2">Italy</option>
-      <option value="3">Japan</option>
-      <option value="4">Hungary</option>
-      <option value="5">Romania</option>
-      <option value="6">Bulgaria</option>
-      <option value="7">United Kingdom</option>
-      <option value="8">USA</option>
-      <option value="9">Soviet Union</option>
-      <option value="10">France</option>
-      <option value="11">China</option>
-      <option value="12">Canada</option>
-      <option value="13">Australia</option>
-      <option value="14">New Zealand</option>
-      <option value="15">India</option>
-      <option value="16">Switzerland</option>
-      <option value="17">Sweden</option>
-      <option value="18">Spain</option>
-      <option value="19">Portugal</option>
-      <option value="20">Turkey</option>
+      @foreach($countries as $country)
+        <option value="{{ $country->id }}">{{ $country->name }}</option>
+      @endforeach
     </select>
 
     @error('country')

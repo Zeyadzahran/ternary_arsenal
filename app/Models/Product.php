@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Weapon extends Model
+class Product extends Model
 {
     //
-    protected $fillable = ['name', 'model', 'category_id','country_id','price'];
+    protected $guarded = [];
 
     public function category()
     {

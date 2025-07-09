@@ -15,7 +15,7 @@ class Inventory extends Model
     }
     public function weapon()
     {
-        return $this->belongsTo(Weapon::class);
+        return $this->belongsTo(Product::class);
     }
 
 }

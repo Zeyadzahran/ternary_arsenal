@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product;
+
 
 class Order extends Model
 {
@@ -21,6 +23,6 @@ class Order extends Model
 
     public function weapon()
     {
-        return $this->belongsTo(Weapon::class);
+        return $this->belongsTo(Product::class);
     }
 }

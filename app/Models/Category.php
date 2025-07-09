@@ -12,7 +12,7 @@ class Category extends Model
 
     public function weapons()
     {
-        return $this->hasMany(Weapon::class);
+        return $this->hasMany(Product::class);
     }
 
 }
