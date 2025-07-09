@@ -7,33 +7,40 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-     public function login(Request $request)
+    public function create()
     {
-        $credentials = $request->validate([
-            'email' => ['required' , 'email'],
-            'password' => ['required', 'string' , 'min:8'],
+        return view('auth.login');
+    }
+    public function store()
+    {
+        $credentials = request()->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8'],
         ]);
 
-        $user = User::where('email', $request->email)->first();
-
-        if(!$user)
-        {
-            return back()->withErrors([
-                'email' => "Email Not Found",
-            ])->withInput();
+        if (!Auth::attempt($credentials)) {
+            throw ValidationException::withMessages([
+                'email' => "You have wrong credentials"
+            ]);
         }
+        request()->session()->regenerate();
 
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->withErrors([
-                'password' => "Wrong Pasword"
-            ])->withInput();
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return redirect('/admin/dashboard')->with('success', 'Login successful!');
+        } else {
+            return redirect('/home')->with('success', 'Login successful!');
         }
-        Auth::login($user);
-        $request->session()->regenerate();
+    }
 
-      return redirect()->intended('/home')->with('success', 'Login successful');
+    public function destroy()
+    {
+        Auth::logout();
+        return redirect('/');
     }
 }
