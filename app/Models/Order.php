@@ -11,7 +11,7 @@ class Order extends Model
     //
     protected $fillable = [
         'user_id',
-        'weapon_id',
+        'product_id',
         'quantity',
         'status'
     ];
@@ -21,7 +21,7 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function weapon()
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }

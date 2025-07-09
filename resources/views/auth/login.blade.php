@@ -118,6 +118,10 @@
     </div>
    @endif
 
+   @if(request('redirect_reason') === 'buy')
+    <p style="color: red">Please login first to buy a product.</p>
+   @endif
+
     <form method="POST" action="/login">
       @csrf
 

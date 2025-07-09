@@ -1,6 +1,6 @@
-{{-- @extends('layouts.app') --}}
+@extends('layouts.navbar')
 
-{{-- @section('content') --}}
+@section('content')
 <h1>Product Details</h1>
 
 <ul>
@@ -15,4 +15,4 @@
 
 <a href="{{ route('product.edit', $product->id) }}">Edit</a> |
 <a href="{{ route('product.index') }}">Back to List</a>
-{{-- @endsection --}}
+@endsection

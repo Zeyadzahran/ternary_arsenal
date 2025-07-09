@@ -1,6 +1,6 @@
-{{-- @extends('layouts.app') --}}
+@extends('layouts.navbar')
 
-{{-- @section('content') --}}
+@section('content')
 <h1>Edit Product</h1>
 
 <form action="{{ route('product.update', $product->id) }}" method="POST">
@@ -42,4 +42,4 @@
 
     <button type="submit">Update</button>
 </form>
-{{-- @endsection --}}
+@endsection

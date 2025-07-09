@@ -259,7 +259,20 @@
             background: var(--bullet);
             color: #fff;
         }
-        
+
+        .btn-products {
+        background: rgba(12, 79, 9, 0.9);
+        color: var(--rust);
+        border: 4px solid var(--bullet);
+        }
+
+        .btn-products:hover {
+            background: var(--rust);
+            color: #fff;
+        }
+
+
+
         .country-section {
             padding: 100px 20px;
             max-width: 1400px;
@@ -591,6 +604,9 @@
         <div class="cta-buttons">
             <a href="/register" class="war-btn btn-join">Join The Arsenal</a>
             <a href="/login" class="war-btn btn-login">Operator Access</a>
+        </div>
+        <div class="cta-buttons">
+            <a href="/product" class="war-btn btn-products">Products</a>
         </div>
     </section>
     

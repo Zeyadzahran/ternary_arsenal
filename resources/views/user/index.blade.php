@@ -1,3 +1,7 @@
+@extends('layouts.navbar')
+
+@section('content')
+
 
 <!DOCTYPE html>
 <html>
@@ -30,21 +34,7 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div><a href="/home">Home</a>
-        <a href="/products">products</a>
-        <a href="/inventory">inventory</a>
-
-        </div>
-        <div>
-            <form method  = "POST" action = "logout">
-                @csrf
-                <button>log out </button>
-            </form>
-            
-        </div>
-    </div>
-
     <h1>Her we will Impelment the Shop logic </h1>
 </body>
 </html>
+@endsection
