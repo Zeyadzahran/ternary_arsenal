@@ -1,6 +1,6 @@
-{{-- @extends('layouts.app') --}}
+@extends('layouts.navbar')
 
-{{-- @section('content') --}}
+@section('content') 
 <h1>Add Product</h1>
 
 <form action="{{ route('product.store') }}" method="POST">
@@ -37,4 +37,4 @@
 
     <button type="submit">Create</button>
 </form>
-{{-- @endsection --}}
+@endsection

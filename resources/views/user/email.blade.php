@@ -1,3 +1,7 @@
+@extends('layouts.navbar') 
+
+@section('content') 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,21 +13,6 @@
             color: white;
             margin: 0;
             font-family: Arial, sans-serif;
-        }
-
-        .navbar {
-            background-color: #330000;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
         }
 
         .products {
@@ -75,16 +64,6 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div><a href="/home">Home</a>
-        <a href="/products">products</a>
-        <a href="/inventory">inventory</a>
-
-        </div>
-        <div>
-            <a href="/">Logout</a>
-        </div>
-    </div>
 
     <div class="products">
         <!-- Example Products -->
@@ -105,3 +84,4 @@
     </div>
 </body>
 </html>
+@endsection

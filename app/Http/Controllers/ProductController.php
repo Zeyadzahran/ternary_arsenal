@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Category;
 use App\Models\Country;
@@ -102,6 +103,44 @@ class ProductController extends Controller
 
     }
 
+    public function showBuyPage(string $id)
+    {
+        $product = Product::findOrFail($id);
+        return view('product.buy', ['product' => $product]);
+    }
+
+    public function buy(Request $request, string $id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please log in first.');
+        }
+
+        $request->validate([
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $quantity = $request->input('quantity');
+
+        $product = Product::findOrFail($id);
+
+        if ($product->stock < $quantity) {
+            return redirect()->back()->with('error', 'Not enough stock available!');
+        }
+
+        // $product->stock -= $quantity;
+        // $product->save();
+
+        \App\Models\Order::create([
+            'user_id'   => Auth::id(),
+            'product_id' => $product->id,
+            'quantity'  => $quantity,
+            'status'    => 'pending',
+        ]);
+
+        return redirect()->route('product.index')->with('success', 'Order placed for ' . $quantity . ' of ' . $product->name);
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */
@@ -111,7 +150,6 @@ class ProductController extends Controller
 
         $product = Product::findOrFail($id);
         $product->delete();
-        return redirect('/products')->with('success', 'Product deleted successfully!');
-
+        return redirect()->route('product.index')->with('success', 'Product deleted successfully!');
     }
 }

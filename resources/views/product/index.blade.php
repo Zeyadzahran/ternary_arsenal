@@ -1,6 +1,6 @@
-{{-- @extends('layouts.app') --}}
+@extends('layouts.navbar')
 
-{{-- @section('content') --}}
+@section('content') 
 <h1>All Products</h1>
 
 <a href="{{ route('product.create') }}">Add New Product</a>
@@ -26,6 +26,11 @@
         <td>
             <a href="{{ route('product.show', $product->id) }}">View</a> |
             <a href="{{ route('product.edit', $product->id) }}">Edit</a> |
+            @if(Auth::check())
+                    <a href="{{ route('product.buy', $product->id) }}">Buy</a> |
+            @else
+                    <a href="{{ route('login', ['redirect_reason' => 'buy']) }}">Buy</a> |
+            @endif
             <form method="POST" action="{{ route('product.destroy', $product->id) }}" style="display:inline;">
                 @csrf
                 @method('DELETE')
@@ -35,4 +40,5 @@
     </tr>
     @endforeach
 </table>
-{{-- @endsection --}}
+@endsection
+
