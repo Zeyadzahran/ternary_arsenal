@@ -7,7 +7,7 @@ use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\ProfileController;
 
 
 Route::view('/', 'welcome');
@@ -33,6 +33,12 @@ Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
 Route::post('logout', [LoginController::class, 'destroy']); 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 
 Route::resource('product', ProductController::class);
