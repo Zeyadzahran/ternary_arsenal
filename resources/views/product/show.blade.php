@@ -1,4 +1,4 @@
-@extends('layouts.navbar')
+@extends('layouts.app')
 
 @section('content')
 <h1>Product Details</h1>
@@ -13,6 +13,10 @@
     <li><strong>Path:</strong> {{ $product->path }}</li>
 </ul>
 
-<a href="{{ route('product.edit', $product->id) }}">Edit</a> |
+@auth
+    @if(Auth::user()->role == 'admin') 
+    <a href="{{ route('product.edit', $product->id) }}">Edit</a>
+    @endif
+@endauth
 <a href="{{ route('product.index') }}">Back to List</a>
 @endsection

@@ -34,7 +34,7 @@ class LoginController extends Controller
         if ($user->role === 'admin') {
             return redirect('/admin/dashboard')->with('success', 'Login successful!');
         } else {
-            return redirect('/home')->with('success', 'Login successful!');
+            return redirect('/product')->with('success', 'Login successful!');
         }
     }
 
