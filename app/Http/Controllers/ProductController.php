@@ -14,12 +14,37 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $products = Product::with(['category', 'country'])->get();
-        return view('product.index', ['products' => $products]);
+        $query = Product::with(['category', 'country']);
+
+        if ($request->has('query')) {
+            $searchTerm = $request->query('query');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm . '%')
+                    ->orWhere('model', 'like', $searchTerm . '%');
+            });
+        }
+
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if (auth()->check() && auth()->user()->role !== 'admin') {
+            $query->where('country_id', auth()->user()->country_id);
+        }
+
+        $products = $query->get();
+
+        return view('product.index', compact('products'));
     }
+
+
+
+
+   
+
 
     /**
      * Show the form for creating a new resource.
@@ -140,7 +165,29 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Order placed for ' . $quantity . ' of ' . $product->name);
     }
 
+    public function liveSearch(Request $request)
+    {
+        $query = $request->input('query');
 
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        return Product::query()
+            ->with(['category', 'country'])
+            ->where('name', 'like', $query . '%')
+            ->orWhere('model', 'like', $query . '%')
+            ->limit(10)
+            ->get(['id', 'name', 'model'])
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'model' => $product->model,
+                    'category' => $product->category->name ?? null,
+                ];
+            });
+    }
     /**
      * Remove the specified resource from storage.
      */

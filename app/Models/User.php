@@ -60,6 +60,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Inventory::class);
     }
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+    public function isGeneral()
+    {
+        return $this->role === 'general';
+    }
    
 
 }
