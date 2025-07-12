@@ -1,9 +1,9 @@
-@extends('layouts.navbar')
+@extends('layouts.app')
 
 @section('content')
 <h2>Edit Profile</h2>
 
-<form method="POST" action="{{ route('profile.update') }}">
+<form method="POST" action="/profile/update">
     @csrf
     @method('PUT')
 
@@ -33,5 +33,15 @@
     </div>
 
     <button type="submit">Save Changes</button>
+
 </form>
+
+
+    <form action="/profile/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            Delete Account
+        </button>
+    </form>
 @endsection

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->double('price');
             $table->integer('stock')->default(0);
-            $table->string('path');
+            $table->string('image_public_id')->nullable();
+            $table->text('description');
             $table->timestamps();
-
             $table->unique(['name', 'model']);
         });
     }

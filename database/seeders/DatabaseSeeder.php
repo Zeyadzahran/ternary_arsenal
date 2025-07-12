@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProductSeeder::class,
         ]);
+
+        \App\Models\Product::factory()->count(50)->create();
     }
 
 }

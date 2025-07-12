@@ -12,13 +12,13 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
+       $categories = [
             ['name' => 'Infantry Weapons'],
             ['name' => 'Tanks'],
             ['name' => 'Artillery'],
             ['name' => 'Naval Forces'],
             ['name' => 'Planes'],
-        ];
+        ]; 
 
         foreach ($categories as $category) {
             Category::create($category);

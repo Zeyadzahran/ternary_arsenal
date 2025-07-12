@@ -23,17 +23,14 @@ class ProfileController extends Controller
    public function update(Request $request)
     {
         $user = Auth::user();
-
+        
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'current_password' => ['required', 'current_password'], // Laravel 8+ has this built-in rule
+            'current_password' => ['required', 'current_password'],
             'password' => ['nullable', 'confirmed', 'min:8'],
         ]);
-
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-
+            
         if (!empty($validated['password'])) {
             $user->password = bcrypt($validated['password']);
         }
