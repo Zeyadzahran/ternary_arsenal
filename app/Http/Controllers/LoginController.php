@@ -31,11 +31,9 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
-        if ($user->role === 'admin') {
-            return redirect('/admin/dashboard')->with('success', 'Login successful!');
-        } else {
+       
             return redirect('/product')->with('success', 'Login successful!');
-        }
+        
     }
 
     public function destroy()

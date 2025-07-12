@@ -3,7 +3,7 @@
 @section('content')
 <h1>Edit Product</h1>
 
-<form action="{{ route('product.update', $product->id) }}" method="POST">
+<form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -37,8 +37,17 @@
     <label>Stock:</label>
     <input type="number" name="stock" value="{{ $product->stock }}"><br>
 
-    <label>Path:</label>
-    <input type="text" name="path" value="{{ $product->path }}" required><br>
+  
+
+    @if(isset($imageUrl))
+        <p>Current Image:</p>
+        <img src="{{ $imageUrl }}" alt="Current Image" style="max-width: 150px;"><br>
+    @endif
+
+    <label for="image">Change Product Image:</label>
+    <div style="border: 2px dashed #aaa; padding: 20px; margin: 10px 0;">
+        <input type="file" name="image" accept="image/*" style="border: none;" />
+    </div>
 
     <button type="submit">Update</button>
 </form>
