@@ -9,8 +9,17 @@ use App\Models\Category;
 use App\Models\Country;
 use App\Models\Product;
 
+use App\Services\CloudinaryService;
+
 class ProductController extends Controller
 {
+    protected CloudinaryService $cloudinary;
+
+    public function __construct()
+    {
+        $this->cloudinary = new CloudinaryService();
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -36,7 +45,17 @@ class ProductController extends Controller
         }
 
         $products = $query->get();
-
+        
+        
+        
+        foreach ($products as $product) {
+            $product->image_url = $product->image_public_id
+                ? $this->cloudinary->getImageUrl($product->image_public_id)
+                : null;
+        }
+       
+        // dd($products);
+        
         return view('product.index', compact('products'));
     }
 
@@ -62,34 +81,49 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+  
+
     public function store(Request $request)
     {
-        //
-        $atrributes = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'model'       => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'int', 'exists:categories,id'],
-            'country_id'  => ['required', 'int', 'exists:countries,id'],
-            'price'       => ['required', 'numeric', 'min:0'],
-            'stock'       => ['nullable', 'int', 'min:0'],
-            'path'        => ['required', 'string', 'max:255'],
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'model'       => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'country_id'  => 'required|exists:countries,id',
+            'price'       => 'required|numeric',
+            'stock'       => 'required|integer',
+            'description' => 'nullable|string',
+            'image'       => 'required|image|max:4096',
         ]);
 
-        Product::create($atrributes);
-        return redirect('/product')->with('success', 'Product added successfully!');
+        $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
 
+
+        Product::create($validated);
+
+        return redirect()->route('product.index')->with('success', 'Product created');
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
 
+
+
+    public function show($id)
+    {
         $product = Product::with(['category', 'country'])->findOrFail($id);
-        return view('product.show', ['product' => $product]);
+
+
+        $imageUrl = $product->image_public_id
+            ? $this->cloudinary->getImageUrl($product->image_public_id)
+            : null;
+
+        return view('product.show', compact('product', 'imageUrl'));
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -107,9 +141,10 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
+  
+
     public function update(Request $request, string $id)
     {
-        //
         $validated = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'model'       => ['required', 'string', 'max:255'],
@@ -117,16 +152,27 @@ class ProductController extends Controller
             'country_id'  => ['required', 'int', 'exists:countries,id'],
             'price'       => ['required', 'numeric', 'min:0'],
             'stock'       => ['nullable', 'int', 'min:0'],
-            'path'        => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'image'       => ['nullable', 'image', 'max:4096'],
         ]);
 
         $product = Product::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+
+            if ($product->image_public_id) {
+                $this->cloudinary->deleteImage($product->image_public_id);
+            }
+
+            $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
+            unset($validated['image']);
+        }
+
         $product->update($validated);
 
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
-
-
     }
+
 
     public function showBuyPage(string $id)
     {
