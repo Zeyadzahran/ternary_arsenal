@@ -2,6 +2,14 @@
     <nav>
         <div class="nav-left">
             <a href="/product">Arsenal</a>
+            @auth
+                @if (auth()->user()->role === 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('user.index') }}">Users</a>
+                    </li>
+                @endif
+            @endauth
+
         </div>
 
         <div class="nav-right">

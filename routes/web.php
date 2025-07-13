@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Cloudinary\Cloudinary;
 
 Route::get('/test-cloud', function () {
@@ -53,3 +54,8 @@ Route::middleware('auth')->group(function () {
 Route::resource('product', ProductController::class);
 Route::get('/product/{id}/buy', [ProductController::class, 'showBuyPage'])->name('product.buy');
 Route::post('/product/{id}/buy', [ProductController::class, 'buy'])->name('product.buy');
+
+
+
+Route::get('/users', [UserController::class, 'index'])->name('user.index');
+Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('user.updateRole');

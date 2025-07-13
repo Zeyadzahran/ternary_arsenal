@@ -21,153 +21,115 @@ class ProductController extends Controller
         $this->cloudinary = new CloudinaryService();
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+    public function index(Request $request)
+    {
+        $query = Product::with(['category', 'country', 'discount']);
 
-public function index(Request $request)
-{
-    $query = Product::with(['category', 'country']);
-
-    if ($request->has('query')) {
-        $searchTerm = $request->query('query');
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('name', 'like', $searchTerm . '%')
-              ->orWhere('model', 'like', $searchTerm . '%');
-        });
-    }
-
-    if ($request->has('category')) {
-        $query->where('category_id', $request->category);
-    }
-
-    $user = auth()->user();
-    $userCountry = $user?->country;
-    $userCountryId = $user?->country_id;
-    $userTeam = $userCountry?->team;
-
-    $sameTeamCountryIds = $userTeam
-        ? Country::where('team', $userTeam)->pluck('id')->toArray()
-        : [];
-
-    $products = $query->get();
-
-    foreach ($products as $product) {
-        $product->image_url = $product->image_public_id
-            ? $this->cloudinary->getImageUrl($product->image_public_id)
-            : null;
-
-        $isSameTeam = $userCountryId && in_array($product->country_id, $sameTeamCountryIds);
-
-        $product->is_same_team = $isSameTeam;
-
-        $product->final_price = $isSameTeam
-            ? $product->price * 0.8
-            : $product->price;
-
-        if ($isSameTeam && $product->final_price < $product->price) {
-            Discount::updateOrCreate(
-                ['product_id' => $product->id],
-                ['discounted_price' => $product->final_price]
-            );
+        if ($request->has('query')) {
+            $searchTerm = $request->query('query');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm . '%')
+                    ->orWhere('model', 'like', $searchTerm . '%');
+            });
         }
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $user = auth()->user();
+        $userCountry = $user?->country;
+        $userCountryId = $user?->country_id;
+        $userTeam = $userCountry?->team;
+        $userRole = $user?->role;
+
+        if ($userTeam) {
+            if ($userRole === 'admin') {
+                $countryIds = Country::where('team', $userTeam)->pluck('id')->toArray();
+                $query->whereIn('country_id', $countryIds);
+            } else {
+                $query->where('country_id', $userCountryId);
+            }
+        }
+
+        $products = $query->get();
+
+        foreach ($products as $product) {
+            $product->image_url = $product->image_public_id
+                ? $this->cloudinary->getImageUrl($product->image_public_id)
+                : null;
+        }
+
+        return view('product.index', compact('products'));
     }
 
-    return view('product.index', compact('products'));
-}
-
-
-
-
-
-
-   
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
-
         $catogories = Category::all();
         $countries = Country::all();
         return view('product.create', ['categories' => $catogories, 'countries' => $countries]);
-      
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-  
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'model'       => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'country_id'  => 'required|exists:countries,id',
-            'price'       => 'required|numeric',
-            'stock'       => 'required|integer',
-            'description' => 'nullable|string',
-            'image'       => 'required|image|max:4096',
+            'name'             => 'required|string|max:255',
+            'model'            => 'required|string|max:255',
+            'category_id'      => 'required|exists:categories,id',
+            'country_id'       => 'required|exists:countries,id',
+            'price'            => 'required|numeric',
+            'stock'            => 'required|integer',
+            'description'      => 'nullable|string',
+            'image'            => 'required|image|max:4096',
+            'discounted_price' => 'nullable|numeric|lt:price'
         ]);
 
         $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
 
-        unset($validated['image']);
-        Product::create($validated);
+        $discountedPrice = $validated['discounted_price'] ?? null;
+        unset($validated['image'], $validated['discounted_price']);
 
+        $product = Product::create($validated);
+
+        if ($discountedPrice) {
+            Discount::create([
+                'product_id' => $product->id,
+                'discounted_price' => $discountedPrice,
+            ]);
+        }
 
         return redirect()->route('product.index')->with('success', 'Product created');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-
-
-
     public function show($id)
     {
-        $product = Product::with(['category', 'country'])->findOrFail($id);
+        $product = Product::with(['category', 'country', 'discount'])->findOrFail($id);
 
         $imageUrl = $product->image_public_id
             ? $this->cloudinary->getImageUrl($product->image_public_id)
             : null;
 
-        $isSameCountry = auth()->check() && auth()->user()->country_id === $product->country_id;
-        $product->is_same_country = $isSameCountry;
-        $product->final_price = $isSameCountry
-            ? round($product->price * 0.8, 2)
-            : $product->price;
-
         return view('product.show', compact('product', 'imageUrl'));
     }
 
-
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+   public function edit(string $id)
     {
-        //
         $product = Product::findOrFail($id);
-        $catogories = Category::all();
+        $user = auth()->user();
+
+        if ($user->role !== 'admin' || $user->country_id !== $product->country_id) {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $categories = Category::all();
         $countries = Country::all();
 
-        return view('product.edit', ['product' => $product, 'categories' => $catogories, 'countries' => $countries]);
+        return view('product.edit', [
+            'product' => $product,
+            'categories' => $categories,
+            'countries' => $countries
+        ]);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-  
 
     public function update(Request $request, string $id)
     {
@@ -179,25 +141,42 @@ public function index(Request $request)
             'price'       => ['required', 'numeric', 'min:0'],
             'stock'       => ['nullable', 'int', 'min:0'],
             'description' => ['nullable', 'string'],
+            'discounted_price' => ['nullable', 'numeric', 'min:0'],
             'image'       => ['nullable', 'image', 'max:4096'],
         ]);
 
+        $productData = $validated;
+        unset($productData['discounted_price']);
+
         $product = Product::findOrFail($id);
+        $user = auth()->user();
+
+        if ($user->role !== 'admin' || $user->country_id !== $product->country_id) {
+            abort(403, 'Unauthorized update.');
+        }
 
         if ($request->hasFile('image')) {
-
             if ($product->image_public_id) {
                 $this->cloudinary->deleteImage($product->image_public_id);
             }
 
-            $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
-            unset($validated['image']);
+            $productData['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
         }
 
-        $product->update($validated);
+        $product->update($productData);
+
+        if ($request->filled('discounted_price')) {
+            $product->discount()->updateOrCreate(
+                ['product_id' => $product->id],
+                ['discounted_price' => $request->discounted_price]
+            );
+        } else {
+            $product->discount()->delete();
+        }
 
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
     }
+
 
 
     public function showBuyPage(string $id)
@@ -217,21 +196,17 @@ public function index(Request $request)
         ]);
 
         $quantity = $request->input('quantity');
-
         $product = Product::findOrFail($id);
 
         if ($product->stock < $quantity) {
             return redirect()->back()->with('error', 'Not enough stock available!');
         }
 
-        // $product->stock -= $quantity;
-        // $product->save();
-
         \App\Models\Order::create([
-            'user_id'   => Auth::id(),
+            'user_id'    => Auth::id(),
             'product_id' => $product->id,
-            'quantity'  => $quantity,
-            'status'    => 'pending',
+            'quantity'   => $quantity,
+            'status'     => 'pending',
         ]);
 
         return redirect()->route('product.index')->with('success', 'Order placed for ' . $quantity . ' of ' . $product->name);
@@ -260,13 +235,9 @@ public function index(Request $request)
                 ];
             });
     }
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
-
         $product = Product::findOrFail($id);
         $product->delete();
         return redirect()->route('product.index')->with('success', 'Product deleted successfully!');

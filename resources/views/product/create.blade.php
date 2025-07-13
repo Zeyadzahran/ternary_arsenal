@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content') 
+@if(auth()->check() && auth()->user()->role === 'admin')
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Add New Product</h2>
 
@@ -65,4 +66,5 @@
         </div>
     </form>
 </div>
+@endif
 @endsection
