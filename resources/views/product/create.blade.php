@@ -1,40 +1,68 @@
 @extends('layouts.app')
 
 @section('content') 
-<h1>Add Product</h1>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Add New Product</h2>
 
-<form action="{{ route('product.store') }}" method="POST">
-    @csrf
+    <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data" class="w-50 mx-auto p-4 border rounded shadow-sm bg-light">
+        @csrf
 
-    <label>Name:</label>
-    <input type="text" name="name" required><br>
+        <div class="mb-3">
+            <label class="form-label">Name:</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
 
-    <label>Model:</label>
-    <input type="text" name="model" required><br>
+        <div class="mb-3">
+            <label class="form-label">Model:</label>
+            <input type="text" name="model" class="form-control" required>
+        </div>
 
-    <label>Category:</label>
-    <select name="category_id" required>
-        @foreach ($categories as $category)
-            <option value="{{ $category->id }}">{{ $category->name }}</option>
-        @endforeach
-    </select><br>
+        <div class="mb-3">
+            <label class="form-label">Category:</label>
+            <select name="category_id" class="form-select" required>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
 
-    <label>Country:</label>
-    <select name="country_id" required>
-        @foreach ($countries as $country)
-            <option value="{{ $country->id }}">{{ $country->name }}</option>
-        @endforeach
-    </select><br>
+        <div class="mb-3">
+            <label class="form-label">Country:</label>
+            <select name="country_id" class="form-select" required>
+                @foreach ($countries as $country)
+                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                @endforeach
+            </select>
+        </div>
 
-    <label>Price:</label>
-    <input type="number" name="price" step="0.01" required><br>
+        <div class="mb-3">
+            <label class="form-label">Price:</label>
+            <input type="number" name="price" class="form-control" step="0.01" required>
+        </div>
 
-    <label>Stock:</label>
-    <input type="number" name="stock" value="0"><br>
+        <div class="mb-3">
+            <label class="form-label">Stock:</label>
+            <input type="number" name="stock" class="form-control" value="0">
+        </div>
 
-    <label>Path:</label>
-    <input type="text" name="path" required><br>
+        <div class="mb-3">
+            <label class="form-label">Description:</label>
+            <textarea name="description" class="form-control" rows="3" placeholder="Enter product details..."></textarea>
+        </div>
 
-    <button type="submit">Create</button>
-</form>
+        <div class="mb-3">
+            <label class="form-label">Image:</label>
+            <input type="file" name="image" class="form-control" accept="image/*" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Discounted Price (optional):</label>
+            <input type="number" name="discounted_price" class="form-control" step="0.01">
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-5">Create</button>
+        </div>
+    </form>
+</div>
 @endsection

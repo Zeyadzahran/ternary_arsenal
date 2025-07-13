@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Product;
+use App\Models\Discount;
 
 use App\Services\CloudinaryService;
 
@@ -23,41 +24,59 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $query = Product::with(['category', 'country']);
 
-        if ($request->has('query')) {
-            $searchTerm = $request->query('query');
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', $searchTerm . '%')
-                    ->orWhere('model', 'like', $searchTerm . '%');
-            });
-        }
+public function index(Request $request)
+{
+    $query = Product::with(['category', 'country']);
 
-
-        if ($request->has('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        if (auth()->check() && auth()->user()->role !== 'admin') {
-            $query->where('country_id', auth()->user()->country_id);
-        }
-
-        $products = $query->get();
-        
-        
-        
-        foreach ($products as $product) {
-            $product->image_url = $product->image_public_id
-                ? $this->cloudinary->getImageUrl($product->image_public_id)
-                : null;
-        }
-       
-        // dd($products);
-        
-        return view('product.index', compact('products'));
+    if ($request->has('query')) {
+        $searchTerm = $request->query('query');
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('name', 'like', $searchTerm . '%')
+              ->orWhere('model', 'like', $searchTerm . '%');
+        });
     }
+
+    if ($request->has('category')) {
+        $query->where('category_id', $request->category);
+    }
+
+    $user = auth()->user();
+    $userCountry = $user?->country;
+    $userCountryId = $user?->country_id;
+    $userTeam = $userCountry?->team;
+
+    $sameTeamCountryIds = $userTeam
+        ? Country::where('team', $userTeam)->pluck('id')->toArray()
+        : [];
+
+    $products = $query->get();
+
+    foreach ($products as $product) {
+        $product->image_url = $product->image_public_id
+            ? $this->cloudinary->getImageUrl($product->image_public_id)
+            : null;
+
+        $isSameTeam = $userCountryId && in_array($product->country_id, $sameTeamCountryIds);
+
+        $product->is_same_team = $isSameTeam;
+
+        $product->final_price = $isSameTeam
+            ? $product->price * 0.8
+            : $product->price;
+
+        if ($isSameTeam && $product->final_price < $product->price) {
+            Discount::updateOrCreate(
+                ['product_id' => $product->id],
+                ['discounted_price' => $product->final_price]
+            );
+        }
+    }
+
+    return view('product.index', compact('products'));
+}
+
+
 
 
 
@@ -98,8 +117,9 @@ class ProductController extends Controller
 
         $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
 
-
+        unset($validated['image']);
         Product::create($validated);
+
 
         return redirect()->route('product.index')->with('success', 'Product created');
     }
@@ -115,13 +135,19 @@ class ProductController extends Controller
     {
         $product = Product::with(['category', 'country'])->findOrFail($id);
 
-
         $imageUrl = $product->image_public_id
             ? $this->cloudinary->getImageUrl($product->image_public_id)
             : null;
 
+        $isSameCountry = auth()->check() && auth()->user()->country_id === $product->country_id;
+        $product->is_same_country = $isSameCountry;
+        $product->final_price = $isSameCountry
+            ? round($product->price * 0.8, 2)
+            : $product->price;
+
         return view('product.show', compact('product', 'imageUrl'));
     }
+
 
 
 

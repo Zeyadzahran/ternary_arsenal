@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="products-grid">
     <h1 class="page-title">Weapon Arsenal Inventory</h1>
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ route('product.create') }}" class="btn-edit">Add New Product</a>
+        </div>
+
 
     @if ($products->isEmpty())
         <p>No weapons found in inventory.</p>
@@ -21,7 +26,15 @@
                         <p><strong>Model:</strong> {{ $product->model }}</p>
                         <p><strong>Category:</strong> {{ $product->category->name ?? '-' }}</p>
                         <p><strong>Country:</strong> {{ $product->country->name ?? '-' }}</p>
-                        <p><strong>Price:</strong> ${{ number_format($product->price, 2) }}</p>
+                       <p><strong>Price:</strong> 
+                            <span style="{{ $product->final_price < $product->price ? 'text-decoration: line-through; color: red;' : '' }}">
+                                ${{ number_format($product->price, 2) }}
+                            </span>
+                            @if($product->final_price < $product->price)
+                                <span style="color: green;"> ${{ number_format($product->final_price, 2) }} (SALE!)</span>
+                            @endif
+                        </p>
+
                         <p><strong>Stock:</strong> <span class="{{ $product->stock > 0 ? 'in-stock' : 'out-of-stock' }}">{{ $product->stock }}</span></p>
 
                         <div class="card-actions">
@@ -31,7 +44,9 @@
                                     <a href="{{ route('product.edit', $product->id) }}" class="btn btn-edit">Edit</a>
                                     <form method="POST" action="{{ route('product.destroy', $product->id) }}">
                                         @csrf
+            
                                         @method('DELETE')
+                    
                                         <button type="submit" onclick="return confirm('Delete this product?')" class="btn btn-delete">Delete</button>
                                     </form>
                                 @endif

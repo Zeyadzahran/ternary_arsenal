@@ -20,7 +20,19 @@
                 <li><strong>Model:</strong> {{ $product->model }}</li>
                 <li><strong>Category:</strong> {{ $product->category->name ?? '-' }}</li>
                 <li><strong>Country:</strong> {{ $product->country->name ?? '-' }}</li>
-                <li><strong>Price:</strong> ${{ number_format($product->price, 2) }}</li>
+                <li><strong>Price:</strong>
+                    @if ($product->is_same_country)
+                        <span style="text-decoration: line-through; color: #999;">
+                            ${{ number_format($product->price, 2) }}
+                        </span>
+                        <span style="color: red; font-weight: bold;">
+                            ${{ number_format($product->final_price, 2) }}
+                        </span>
+                        <span style="color: green;">(20% OFF)</span>
+                    @else
+                        ${{ number_format($product->price, 2) }}
+                    @endif
+                </li>
                 <li><strong>Stock:</strong> {{ $product->stock }}</li>
                 <li class="description-item"><strong>Description:</strong> {{ $product->description }}</li>
             </ul>

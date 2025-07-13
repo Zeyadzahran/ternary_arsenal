@@ -555,7 +555,6 @@ footer {
     background-color: rgba(80, 40, 40, 0.5);
     color: #ffa0a0;
     border: 1px solid #ffa0a0;
-    cursor: pointer;
 }
 
 .delete-btn:hover {
@@ -724,6 +723,24 @@ footer {
 .btn-back:hover {
     background-color: #cbd5e0;
 }
+.btn-main {
+    background-color: #c14f33; 
+    color: #e2e8f0 !important;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0 5px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.btn-main:hover {
+    background-color: #a9442b !important; 
+}
+
 .card-wrapper {
     display: flex;
     flex-wrap: wrap;

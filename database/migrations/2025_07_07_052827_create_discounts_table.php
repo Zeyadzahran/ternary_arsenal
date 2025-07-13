@@ -12,9 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('discounts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        $table->id();
+        $table->unsignedBigInteger('product_id')->unique();
+        $table->decimal('discounted_price', 10, 2)->nullable()->change();
+        $table->timestamps();
+
+        $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+    });
+
     }
 
     /**
