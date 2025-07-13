@@ -31,5 +31,33 @@ class Product extends Model
     {
         return $this->hasMany(Arsenal::class);
     }
+    public function discount()
+    {
+        return $this->hasOne(Discount::class);
+    }
+        public function getIsSameCountryAttribute()
+    {
+        $user = auth()->user();
+        return $user && $user->country_id === $this->country_id;
+    }
+
+    public function getIsSameTeamAttribute()
+    {
+        $user = auth()->user();
+        $userTeam = $user?->country?->team;
+
+        return $user && $user->role === 'admin' && $userTeam && $this->country && $this->country->team === $userTeam;
+    }
+
+    public function getFinalPriceAttribute()
+    {
+        if ($this->discount && ($this->is_same_country || $this->is_same_team)) {
+            return $this->discount->discounted_price;
+        }
+
+        return $this->price;
+    }
+
+
 
 }

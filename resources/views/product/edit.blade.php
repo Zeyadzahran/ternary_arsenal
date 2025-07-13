@@ -37,8 +37,6 @@
     <label>Stock:</label>
     <input type="number" name="stock" value="{{ $product->stock }}"><br>
 
-  
-
     @if(isset($imageUrl))
         <p>Current Image:</p>
         <img src="{{ $imageUrl }}" alt="Current Image" style="max-width: 150px;"><br>
@@ -48,6 +46,15 @@
     <div style="border: 2px dashed #aaa; padding: 20px; margin: 10px 0;">
         <input type="file" name="image" accept="image/*" style="border: none;" />
     </div>
+
+   <div class="mb-3">
+            <label class="form-label">Description:</label>
+            <textarea name="description" class="form-control" rows="3">{{ $product->description }}</textarea>
+        </div>
+
+    <label>Discounted Price (optional):</label>
+    <input type="number" name="discounted_price" step="0.01" 
+           value="{{ optional($product->discount)->discounted_price }}"><br>
 
     <button type="submit">Update</button>
 </form>

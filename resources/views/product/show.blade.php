@@ -20,7 +20,21 @@
                 <li><strong>Model:</strong> {{ $product->model }}</li>
                 <li><strong>Category:</strong> {{ $product->category->name ?? '-' }}</li>
                 <li><strong>Country:</strong> {{ $product->country->name ?? '-' }}</li>
-                <li><strong>Price:</strong> ${{ number_format($product->price, 2) }}</li>
+               <li><strong>Price:</strong>
+                    @if ($product->discount && ($product->is_same_country || $product->is_same_team))
+                        <span style="text-decoration: line-through; color: red;">
+                            ${{ number_format($product->price, 2) }}
+                        </span>
+                        <span style="color: green; font-weight: bold;">
+                            ${{ number_format($product->final_price, 2) }} (SALE!)
+                        </span>
+                    @else
+                        <span style="font-weight: bold;">
+                            ${{ number_format($product->price, 2) }}
+                        </span>
+                    @endif
+                </li>
+
                 <li><strong>Stock:</strong> {{ $product->stock }}</li>
                 <li class="description-item"><strong>Description:</strong> {{ $product->description }}</li>
             </ul>
