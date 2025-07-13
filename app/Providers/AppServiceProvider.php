@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Category;
+use Illuminate\Support\Facades\Session;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             $view->with('categories', Category::all());
-        });
+                $cart = Session::get('cart', []);
+                $totalItemsInCart = array_sum(array_column($cart, 'quantity'));
+                $view->with('cartCount', $totalItemsInCart);
+                    });
     }
 }

@@ -52,9 +52,14 @@ Route::middleware('auth')->group(function () {
 
 // Route::get('/product/live-search', [ProductController::class, 'liveSearch']);
 Route::resource('product', ProductController::class);
-Route::get('/product/{id}/buy', [ProductController::class, 'showBuyPage'])->name('product.buy');
-Route::post('/product/{id}/buy', [ProductController::class, 'buy'])->name('product.buy');
 
+
+Route::post('/cart/add/{product_id}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.addToCart');
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'showCart'])->name('cart.show');
+Route::delete('/cart/remove/{order_id}', [App\Http\Controllers\CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/checkout', [App\Http\Controllers\CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart/checkout/{order}', [App\Http\Controllers\CartController::class, 'checkoutSingle'])->name('cart.checkoutSingle');
+Route::post('/cart/update/{order}', [App\Http\Controllers\CartController::class, 'updateQuantity'])->name('cart.update');
 
 
 Route::get('/users', [UserController::class, 'index'])->name('user.index');

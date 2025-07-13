@@ -13,6 +13,15 @@
         </div>
 
         <div class="nav-right">
+                @php
+                    $pendingCount = \App\Models\Order::where('user_id', Auth::id())->where('status', 'pending')->count();
+                @endphp
+
+                <a href="{{ route('cart.show') }}">
+                    🛒 Cart ({{ $pendingCount }})
+                </a>
+
+
            <form method="GET" action="{{ route('product.index') }}">
                 <input type="text" name="query" placeholder="Search weapons...">
                 <button type="submit">Search</button>
