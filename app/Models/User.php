@@ -68,6 +68,15 @@ class User extends Authenticatable
     {
         return $this->role === 'general';
     }
+
+    public function teamCountries()
+    {
+        return Country::where('team', $this->country->team)->get();
+    }
+    public function isRuler()
+    {
+        return $this->role === 'ruler';
+    }
    
 
 }

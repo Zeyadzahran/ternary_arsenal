@@ -7,30 +7,30 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
-    {
-        public function addToCart(Request $request, $product_id)
 {
-    $user_id = Auth::id();
-    $quantity = $request->input('quantity', 1); // default 1 لو مش متحدد
+    public function addToCart(Request $request, $product_id)
+    {
+        $user_id = Auth::id();
+        $quantity = $request->input('quantity', 1); // default 1 لو مش متحدد
 
-    $existingOrder = Order::where('user_id', $user_id)
-        ->where('product_id', $product_id)
-        ->where('status', 'pending')
-        ->first();
+        $existingOrder = Order::where('user_id', $user_id)
+            ->where('product_id', $product_id)
+            ->where('status', 'pending')
+            ->first();
 
-    if ($existingOrder) {
-        $existingOrder->quantity += $quantity;
-        $existingOrder->save();
-    } else {
-        Order::create([
-            'user_id' => $user_id,
-            'product_id' => $product_id,
-            'quantity' => $quantity,
-            'status' => 'pending',
-        ]);
-    }
+        if ($existingOrder) {
+            $existingOrder->quantity += $quantity;
+            $existingOrder->save();
+        } else {
+            Order::create([
+                'user_id' => $user_id,
+                'product_id' => $product_id,
+                'quantity' => $quantity,
+                'status' => 'pending',
+            ]);
+        }
 
-    return redirect()->back()->with('success', 'Product added to cart!');
+        return redirect()->back()->with('success', 'Product added to cart!');
 }
 
 

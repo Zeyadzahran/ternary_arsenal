@@ -13,9 +13,8 @@ class Country extends Model
     {
         return $this->hasMany(User::class);
     }
-    public function weapons()
+    public function products()
     {
         return $this->hasMany(Product::class);
     }
-
 }

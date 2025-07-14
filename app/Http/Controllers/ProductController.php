@@ -23,8 +23,9 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'country', 'discount']);
+        $query = Product::with(['category', 'country']);
 
+        //  Search by name or model
         if ($request->has('query')) {
             $searchTerm = $request->query('query');
             $query->where(function ($q) use ($searchTerm) {
@@ -33,35 +34,44 @@ class ProductController extends Controller
             });
         }
 
+        // Filter by category
         if ($request->has('category')) {
             $query->where('category_id', $request->category);
         }
 
-        $user = auth()->user();
-        $userCountry = $user?->country;
-        $userCountryId = $user?->country_id;
-        $userTeam = $userCountry?->team;
-        $userRole = $user?->role;
-
-        if ($userTeam) {
-            if ($userRole === 'admin') {
-                $countryIds = Country::where('team', $userTeam)->pluck('id')->toArray();
-                $query->whereIn('country_id', $countryIds);
-            } else {
-                $query->where('country_id', $userCountryId);
-            }
+        //  Normal users see only their country’s products
+        if (auth()->check() && auth()->user()->role !== 'admin') {
+            $query->where('country_id', auth()->user()->country_id);
         }
 
         $products = $query->get();
 
         foreach ($products as $product) {
+            // Existing image logic
             $product->image_url = $product->image_public_id
                 ? $this->cloudinary->getImageUrl($product->image_public_id)
                 : null;
+
+            // 💸 Add discount based on current user's country
+            $viewerCountryId = auth()->user()?->country_id;
+
+            $discount = \App\Models\Discount::where('product_id', $product->id)
+                ->where('to_country_id', $viewerCountryId)
+                ->first();
+
+            if ($discount) {
+                $product->discount_percent = $discount->discount_percent;
+                $product->discounted_price = round($product->price * (1 - $discount->discount_percent / 100), 2);
+            } else {
+                $product->discount_percent = null;
+                $product->discounted_price = null;
+            }
         }
+
 
         return view('product.index', compact('products'));
     }
+
 
     public function create()
     {
@@ -208,4 +218,6 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('product.index')->with('success', 'Product deleted successfully!');
     }
+
+    
 }

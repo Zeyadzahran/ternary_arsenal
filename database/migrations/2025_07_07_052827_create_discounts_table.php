@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('discounts', function (Blueprint $table) {
+        Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id')->unique();
-            $table->decimal('discounted_price', 10, 2)->nullable(); 
+
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+
+            $table->foreignId('from_country_id')->nullable()->constrained('countries')->nullOnDelete();
+
+            $table->foreignId('to_country_id')->constrained('countries')->cascadeOnDelete();
+
+            $table->decimal('discount_percent', 5, 2)->nullable();
+
             $table->timestamps();
-
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
-
     }
 
     /**

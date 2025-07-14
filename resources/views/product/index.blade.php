@@ -6,9 +6,12 @@
     <h1 class="page-title">Weapon Arsenal Inventory</h1>
         <div style="text-align: center; margin: 20px 0;">
              @if(auth()->check() && auth()->user()->role === 'admin')
-            <a href="{{ route('product.create') }}" class="btn-edit">Add New Product</a>
-            @endif
+             <a href="{{ route('product.create') }}" class="btn-edit">Add New Product</a>
+              <a href="{{ route('discounts.index') }}" class="btn-edit" style="margin-left: 10px;">Manage Discounts</a>
+             @endif
         </div>
+
+        {{-- @dd($products) --}}
 
     @if ($products->isEmpty())
         <p>No weapons found in inventory.</p>
@@ -28,12 +31,12 @@
                         <p><strong>Category:</strong> {{ $product->category->name ?? '-' }}</p>
                         <p><strong>Country:</strong> {{ $product->country->name ?? '-' }}</p>
                        <p><strong>Price:</strong> 
-                            @if ($product->discount && ($product->is_same_team || $product->is_same_country))
+                            @if ($product->discounted_price)
                                 <span style="text-decoration: line-through; color: red;">
                                     ${{ number_format($product->price, 2) }}
                                 </span>
-                                <span style="color: green;"> 
-                                    ${{ number_format($product->final_price, 2) }} (SALE!)
+                                <span style="color: green; font-weight: bold;"> 
+                                    ${{ number_format($product->discounted_price, 2) }} (SALE!)
                                 </span>
                             @else
                                 <span style="font-weight: bold;">
