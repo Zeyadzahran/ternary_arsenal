@@ -56,12 +56,18 @@
                                     </form>
                                 @endif
                             @endauth
-
-                                    @if(Auth::check())
-                                            <a href="{{ route('product.buy', $product->id) }}"  class="btn btn-buy">Buy</a>
+                                    @if(auth()->check())
+                                        <form action="{{ route('cart.addToCart', $product->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-buy">Add to Cart</button>
+                                        </form>
                                     @else
-                                            <a href="{{ route('login', ['redirect_reason' => 'buy']) }}" class="btn btn-buy">Buy</a>
+                                        <a href="{{ route('login') }}" 
+                                        onclick="alert('يجب تسجيل الدخول أولًا لإضافة المنتجات إلى السلة'); return true;">
+                                            <button class="btn btn-buy">Add to Cart</button>
+                                        </a>
                                     @endif
+
                         </div>
                     </div>
                 </div>

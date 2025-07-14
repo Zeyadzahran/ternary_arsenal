@@ -178,40 +178,6 @@ class ProductController extends Controller
     }
 
 
-
-    public function showBuyPage(string $id)
-    {
-        $product = Product::findOrFail($id);
-        return view('product.buy', ['product' => $product]);
-    }
-
-    public function buy(Request $request, string $id)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please log in first.');
-        }
-
-        $request->validate([
-            'quantity' => 'required|integer|min:1'
-        ]);
-
-        $quantity = $request->input('quantity');
-        $product = Product::findOrFail($id);
-
-        if ($product->stock < $quantity) {
-            return redirect()->back()->with('error', 'Not enough stock available!');
-        }
-
-        \App\Models\Order::create([
-            'user_id'    => Auth::id(),
-            'product_id' => $product->id,
-            'quantity'   => $quantity,
-            'status'     => 'pending',
-        ]);
-
-        return redirect()->route('product.index')->with('success', 'Order placed for ' . $quantity . ' of ' . $product->name);
-    }
-
     public function liveSearch(Request $request)
     {
         $query = $request->input('query');
