@@ -9,6 +9,8 @@ use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DiscountController;
+
 use Cloudinary\Cloudinary;
 
 Route::get('/test-cloud', function () {
@@ -52,6 +54,10 @@ Route::middleware('auth')->group(function () {
 
 // Route::get('/product/live-search', [ProductController::class, 'liveSearch']);
 Route::resource('product', ProductController::class);
+
+Route::resource('discounts', DiscountController::class)->middleware('auth');
+
+
 
 
 Route::post('/cart/add/{product_id}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.addToCart');

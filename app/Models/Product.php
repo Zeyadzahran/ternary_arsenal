@@ -33,9 +33,10 @@ class Product extends Model
     }
     public function discount()
     {
-        return $this->hasOne(Discount::class);
+        return $this->hasMany(Discount::class);
     }
-        public function getIsSameCountryAttribute()
+
+    public function getIsSameCountryAttribute()
     {
         $user = auth()->user();
         return $user && $user->country_id === $this->country_id;

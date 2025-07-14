@@ -23,7 +23,8 @@ class ProductFactory extends Factory
             'country_id' => \App\Models\Country::inRandomOrder()->first()->id ?? 1,
             'price' => $this->faker->randomFloat(2, 100, 1000),
             'stock' => $this->faker->numberBetween(0, 100),
-            'path' => $this->faker->imageUrl(640, 480, 'products', true),
+            'description' => $this->faker->paragraph(),
+
         ];
     }       
 }

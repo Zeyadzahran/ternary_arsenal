@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->foreignId('country_id')->constrained();
-            $table->enum('role', ['admin', 'general']);
+            $table->enum('role', ['ruler','admin', 'general']);
             $table->rememberToken();
             $table->timestamps();
         });
