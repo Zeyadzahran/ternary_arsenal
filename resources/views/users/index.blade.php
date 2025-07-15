@@ -27,7 +27,7 @@
                 <td>{{ $user->role }}</td>
                 <td>{{ $user->country->name }}</td>
                 <td>
-                    <form method="POST" action="{{ route('user.updateRole', $user->id) }}">
+                    <form method="POST" action="{{ route('users.updateRole', $user->id) }}">
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="btn btn-sm btn-warning">

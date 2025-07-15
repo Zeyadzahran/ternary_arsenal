@@ -9,28 +9,40 @@
         @csrf
 
         <div class="mb-4">
-            <label for="product_id" class="block">Product</label>
-            <select name="product_id" required class="form-select w-full">
+            <label for="product_id" class="block font-semibold">Product</label>
+            <select name="product_id" id="product_id" required class="form-select w-full mt-1">
                 @foreach($products as $product)
-                    <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->country->name }})</option>
+                    <option value="{{ $product->id }}">
+                        {{ $product->name }} ({{ $product->country->name }})
+                    </option>
                 @endforeach
             </select>
         </div>
 
         <div class="mb-4">
-            <label for="country_id" class="block">Country</label>
-            <select name="country_id" required class="form-select w-full">
+            <label for="to_country_id" class="block font-semibold">Target Country</label>
+            <select name="to_country_id" id="to_country_id" required class="form-select w-full mt-1">
                 @foreach($countries as $country)
-                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                    <option value="{{ $country->id }}">
+                        {{ $country->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
 
         <div class="mb-4">
-            <label for="discount_percent" class="block">Discount (%)</label>
-            <input type="number" name="discount_percent" min="0" max="100" required class="form-input w-full">
+            <label for="discount_percent" class="block font-semibold">Discount (%)</label>
+            <input
+                type="number"
+                name="discount_percent"
+                id="discount_percent"
+                min="0"
+                max="100"
+                required
+                class="form-input w-full mt-1"
+            >
         </div>
 
-        <button type="submit" class="btn-edit">Save Discount</button>
+        <button type="submit" class="btn-edit">💾 Save Discount</button>
     </form>
 @endsection

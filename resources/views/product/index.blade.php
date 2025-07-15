@@ -31,18 +31,18 @@
                         <p><strong>Category:</strong> {{ $product->category->name ?? '-' }}</p>
                         <p><strong>Country:</strong> {{ $product->country->name ?? '-' }}</p>
                        <p><strong>Price:</strong> 
-                            @if ($product->discounted_price)
-                                <span style="text-decoration: line-through; color: red;">
-                                    ${{ number_format($product->price, 2) }}
-                                </span>
-                                <span style="color: green; font-weight: bold;"> 
-                                    ${{ number_format($product->discounted_price, 2) }} (SALE!)
-                                </span>
-                            @else
-                                <span style="font-weight: bold;">
-                                    ${{ number_format($product->price, 2) }}
-                                </span>
-                            @endif
+                            @if ($product->discount_percent)
+                    <span style="text-decoration: line-through; color: red;">
+                        {{ number_format($product->converted_price / (1 - $product->discount_percent / 100), 2) }} {{ $product->viewer_currency }}
+                    </span>
+                    <span style="color: green; font-weight: bold;"> 
+                        {{ number_format($product->converted_price, 2) }} {{ $product->viewer_currency }} (SALE!)
+                    </span>
+                                @else
+                    <span style="font-weight: bold;">
+                        {{ number_format($product->converted_price, 2) }} {{ $product->viewer_currency }}
+                    </span>
+                                      @endif
                         </p>
 
                         <p><strong>Stock:</strong> <span class="{{ $product->stock > 0 ? 'in-stock' : 'out-of-stock' }}">{{ $product->stock }}</span></p>
