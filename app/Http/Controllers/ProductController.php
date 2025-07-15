@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Country;
 use App\Models\Product;
 use App\Models\Discount;
+use App\Services\CurrencyService;
 
 use App\Services\CloudinaryService;
 
@@ -21,12 +22,13 @@ class ProductController extends Controller
         $this->cloudinary = new CloudinaryService();
     }
 
-    public function index(Request $request)
+    public function index(Request $request, CurrencyService $currencyService)
     {
+        //  1 ->  query the products
         $query = Product::with(['category', 'country']);
 
-        //  Search by name or model
-        if ($request->has('query')) {
+        // 2 =>   filter by the name and model 
+        if ($request->filled('query')) {
             $searchTerm = $request->query('query');
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', $searchTerm . '%')
@@ -34,40 +36,53 @@ class ProductController extends Controller
             });
         }
 
-        // Filter by category
-        if ($request->has('category')) {
+        // 3 =>  filter by category
+        if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
-        //  Normal users see only their country’s products
-        if (auth()->check() && auth()->user()->role !== 'admin') {
+        // 4 => make normal users see just their country products
+        if (auth()->check() && auth()->user()->role === 'general' ) {
             $query->where('country_id', auth()->user()->country_id);
         }
 
+        // 5 =>  get the products
         $products = $query->get();
 
+        // 6  =>  get user currency
+        $user = auth()->user();
+        $userCurrency = $user?->country?->currency ?? 'USD';
+
+        // 7 =>  add to each product their img url , discount and their converted price
         foreach ($products as $product) {
-            // Existing image logic
+            // img url 
             $product->image_url = $product->image_public_id
                 ? $this->cloudinary->getImageUrl($product->image_public_id)
                 : null;
 
-            // 💸 Add discount based on current user's country
-            $viewerCountryId = auth()->user()?->country_id;
-
-            $discount = \App\Models\Discount::where('product_id', $product->id)
-                ->where('to_country_id', $viewerCountryId)
+            // discount
+            $discount = Discount::where('product_id', $product->id)
+                ->where('to_country_id', $user?->country_id ?? null)
                 ->first();
 
+            $originalPrice = $product->price;
+
             if ($discount) {
+                $discountedPrice = $originalPrice * (1 - $discount->discount_percent / 100);
                 $product->discount_percent = $discount->discount_percent;
-                $product->discounted_price = round($product->price * (1 - $discount->discount_percent / 100), 2);
+                $product->price_after_discount = $discountedPrice;
             } else {
                 $product->discount_percent = null;
-                $product->discounted_price = null;
+                $product->price_after_discount = $originalPrice;
             }
-        }
 
+            // Convert price to user's currency
+            $productCurrency = $product->country?->currency ?? 'USD';
+            $convertedPrice = $currencyService->convert($product->price_after_discount, $productCurrency, $userCurrency);
+
+            $product->converted_price = $convertedPrice;
+            $product->viewer_currency = $userCurrency;
+        }
 
         return view('product.index', compact('products'));
     }
@@ -111,18 +126,46 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Product created');
     }
 
-    public function show($id)
+    public function show($id, CurrencyService $currencyService)
     {
-        $product = Product::with(['category', 'country', 'discount'])->findOrFail($id);
+        $product = Product::with(['category', 'country'])->findOrFail($id);
 
-        $imageUrl = $product->image_public_id
+        $user = auth()->user();
+        $userCurrency = $user?->country?->currency ?? 'USD';
+        $viewerCountryId = $user?->country_id ?? null;
+
+        $product->image_url = $product->image_public_id
             ? $this->cloudinary->getImageUrl($product->image_public_id)
             : null;
 
-        return view('product.show', compact('product', 'imageUrl'));
+        $discount = Discount::where('product_id', $product->id)
+            ->where('to_country_id', $viewerCountryId)
+            ->first();
+
+        $originalPrice = $product->price;
+        $productCurrency = $product->country?->currency ?? 'USD';
+
+        if ($discount) {
+            $discountedPrice = $originalPrice * (1 - $discount->discount_percent / 100);
+            $product->discount_percent = $discount->discount_percent;
+            $product->price_after_discount = $discountedPrice;
+
+            $product->converted_old_price = $currencyService->convert($originalPrice, $productCurrency, $userCurrency);
+            $product->converted_price = $currencyService->convert($discountedPrice, $productCurrency, $userCurrency);
+        } else {
+            $product->discount_percent = null;
+            $product->price_after_discount = $originalPrice;
+            $product->converted_price = $currencyService->convert($originalPrice, $productCurrency, $userCurrency);
+        }
+
+        $product->viewer_currency = $userCurrency;
+
+        return view('product.show', compact('product'));
     }
 
-   public function edit(string $id)
+
+
+    public function edit(string $id)
     {
         $product = Product::findOrFail($id);
         $user = auth()->user();
@@ -218,6 +261,5 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('product.index')->with('success', 'Product deleted successfully!');
     }
-
     
 }

@@ -1,17 +1,19 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use App\Services\CurrencyService;
 
 class CartController extends Controller
 {
     public function addToCart(Request $request, $product_id)
     {
         $user_id = Auth::id();
-        $quantity = $request->input('quantity', 1); // default 1 لو مش متحدد
+        $quantity = $request->input('quantity', 1);
 
         $existingOrder = Order::where('user_id', $user_id)
             ->where('product_id', $product_id)
@@ -31,18 +33,32 @@ class CartController extends Controller
         }
 
         return redirect()->back()->with('success', 'Product added to cart!');
-}
+    }
 
-
-
-    public function showCart()
+    public function showCart(CurrencyService $currencyService)
     {
-        $orders = Order::with('product')
-                    ->where('user_id', Auth::id())
-                    ->where('status', 'pending')
-                    ->get();
+        $user = Auth::user();
+        $userCurrency = $user?->country?->currency ?? 'USD';
 
-        $total = $orders->sum(fn($order) => $order->product->price * $order->quantity);
+        $orders = Order::with('product.country')
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->get();
+
+        $total = 0;
+
+        foreach ($orders as $order) {
+            $product = $order->product;
+            $productCurrency = $product->country?->currency ?? 'USD';
+            $price = $product->price;
+
+            // Convert price to user currency
+            $convertedPrice = $currencyService->convert($price, $productCurrency, $userCurrency);
+            $order->converted_price = $convertedPrice;
+            $order->viewer_currency = $userCurrency;
+
+            $total += $convertedPrice * $order->quantity;
+        }
 
         return view('product.buy', compact('orders', 'total'));
     }
@@ -50,8 +66,8 @@ class CartController extends Controller
     public function removeFromCart($order_id)
     {
         $order = Order::where('user_id', Auth::id())
-                    ->where('status', 'pending')
-                    ->findOrFail($order_id);
+            ->where('status', 'pending')
+            ->findOrFail($order_id);
 
         $order->delete();
 
@@ -66,10 +82,11 @@ class CartController extends Controller
 
         return redirect()->route('cart.show')->with('success', 'Checkout successful!');
     }
+
     public function checkoutSingle(Order $order)
     {
         if ($order->user_id !== Auth::id()) {
-            abort(403); 
+            abort(403);
         }
 
         $order->status = 'completed';
@@ -77,6 +94,7 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'The Product successfully purchased');
     }
+
     public function updateQuantity(Request $request, $order_id)
     {
         $request->validate([
@@ -84,15 +102,13 @@ class CartController extends Controller
         ]);
 
         $order = Order::where('id', $order_id)
-                    ->where('user_id', Auth::id())
-                    ->where('status', 'pending')
-                    ->firstOrFail();
+            ->where('user_id', Auth::id())
+            ->where('status', 'pending')
+            ->firstOrFail();
 
         $order->quantity = $request->quantity;
         $order->save();
 
         return redirect()->route('cart.show')->with('success', 'Quantity updated!');
     }
-
-
 }

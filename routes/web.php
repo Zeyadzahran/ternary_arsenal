@@ -3,13 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\InventoryController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\CartController;
+use App\Services\CurrencyService;
 
 use Cloudinary\Cloudinary;
 
@@ -29,12 +28,13 @@ Route::get('/check-config', function () {
     dd(config('cloudinary.cloud_url'));
 });
 
+Route::get('/test-currency', function (CurrencyService $currency) {
+    return $currency->convert(100, 'USD', 'EUR');
+
+});
+
 
 Route::view('/', 'welcome');
-
-
-
-
 
 
 
@@ -43,6 +43,8 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
 Route::post('logout', [LoginController::class, 'destroy']);
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -60,13 +62,15 @@ Route::resource('discounts', DiscountController::class)->middleware('auth');
 
 
 
-Route::post('/cart/add/{product_id}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.addToCart');
-Route::get('/cart', [App\Http\Controllers\CartController::class, 'showCart'])->name('cart.show');
-Route::delete('/cart/remove/{order_id}', [App\Http\Controllers\CartController::class, 'removeFromCart'])->name('cart.remove');
-Route::post('/cart/checkout', [App\Http\Controllers\CartController::class, 'checkout'])->name('cart.checkout');
-Route::post('/cart/checkout/{order}', [App\Http\Controllers\CartController::class, 'checkoutSingle'])->name('cart.checkoutSingle');
-Route::post('/cart/update/{order}', [App\Http\Controllers\CartController::class, 'updateQuantity'])->name('cart.update');
+Route::post('/cart/add/{product_id}', [CartController::class, 'addToCart'])->name('cart.addToCart');
+Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
+Route::delete('/cart/remove/{order_id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart/checkout/{order}', [CartController::class, 'checkoutSingle'])->name('cart.checkoutSingle');
+Route::post('/cart/update/{order}', [CartController::class, 'updateQuantity'])->name('cart.update');
 
-
-Route::get('/users', [UserController::class, 'index'])->name('user.index');
-Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('user.updateRole');
+Route::middleware('auth')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});

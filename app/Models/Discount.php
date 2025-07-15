@@ -6,11 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Discount extends Model
 {
-    protected $fillable = [
-        'product_id',
-        'country_id',
-        'discounted_price',
-    ];
+    protected $guarded = [];
+
 
     public function product()
     {

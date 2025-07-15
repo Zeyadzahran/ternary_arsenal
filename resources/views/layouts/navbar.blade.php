@@ -3,9 +3,9 @@
         <div class="nav-left">
             <a href="/product">Arsenal</a>
             @auth
-                @if (auth()->user()->role === 'admin')
+                @if (auth()->user()->role === 'ruler')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('user.index') }}">Users</a>
+                        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
                     </li>
                 @endif
             @endauth
