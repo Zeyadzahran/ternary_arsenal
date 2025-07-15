@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiscountController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ProductSold;
+use App\Models\User;
 
 use Cloudinary\Cloudinary;
 
@@ -31,12 +34,6 @@ Route::get('/check-config', function () {
 
 
 Route::view('/', 'welcome');
-
-
-
-
-
-
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
@@ -70,3 +67,15 @@ Route::post('/cart/update/{order}', [App\Http\Controllers\CartController::class,
 
 Route::get('/users', [UserController::class, 'index'])->name('user.index');
 Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('user.updateRole');
+
+
+
+Route::get('test', function () {
+    \Illuminate\Support\Facades\Mail::to('tahanyemad30@gmail.com')->send(new \App\Mail\ProductSold());
+    dd("doneee");
+    return 'Done';
+});
+Route::get('/test-email', function () {
+    Mail::to('your_email@example.com')->send(new ProductSold());
+    return 'Email sent!';
+});
