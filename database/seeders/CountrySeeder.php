@@ -14,28 +14,28 @@ class CountrySeeder extends Seeder
     public function run()
     {
         $countries = [
-            ['name' => 'Germany', 'currency' => 'RM', 'team' => 'Axis'],
-            ['name' => 'Italy', 'currency' => 'Lira', 'team' => 'Axis'],
-            ['name' => 'Japan', 'currency' => 'Yen', 'team' => 'Axis'],
-            ['name' => 'Hungary', 'currency' => 'Pengő', 'team' => 'Axis'],
-            ['name' => 'Romania', 'currency' => 'Leu', 'team' => 'Axis'],
-            ['name' => 'Bulgaria', 'currency' => 'Lev', 'team' => 'Axis'],
+            ['name' => 'Germany', 'currency' => 'EUR', 'team' => 'Axis'],
+            ['name' => 'Italy', 'currency' => 'EUR', 'team' => 'Axis'],
+            ['name' => 'Japan', 'currency' => 'JPY', 'team' => 'Axis'],
+            ['name' => 'Hungary', 'currency' => 'HUF', 'team' => 'Axis'],
+            ['name' => 'Romania', 'currency' => 'RON', 'team' => 'Axis'],
+            ['name' => 'Bulgaria', 'currency' => 'BGN', 'team' => 'Axis'],
 
-            ['name' => 'United Kingdom', 'currency' => '£', 'team' => 'Allies'],
-            ['name' => 'USA', 'currency' => '$', 'team' => 'Allies'],
-            ['name' => 'Soviet Union', 'currency' => '₽', 'team' => 'Allies'],
-            ['name' => 'France', 'currency' => 'Franc', 'team' => 'Allies'],
-            ['name' => 'China', 'currency' => 'Yuan', 'team' => 'Allies'],
+            ['name' => 'United Kingdom', 'currency' => 'GBP', 'team' => 'Allies'],
+            ['name' => 'USA', 'currency' => 'USD', 'team' => 'Allies'],
+            ['name' => 'Soviet Union', 'currency' => 'RUB', 'team' => 'Allies'],
+            ['name' => 'France', 'currency' => 'EUR', 'team' => 'Allies'],
+            ['name' => 'China', 'currency' => 'CNY', 'team' => 'Allies'],
             ['name' => 'Canada', 'currency' => 'CAD', 'team' => 'Allies'],
             ['name' => 'Australia', 'currency' => 'AUD', 'team' => 'Allies'],
             ['name' => 'New Zealand', 'currency' => 'NZD', 'team' => 'Allies'],
-            ['name' => 'India', 'currency' => 'Rupee', 'team' => 'Allies'],
+            ['name' => 'India', 'currency' => 'INR', 'team' => 'Allies'],
 
             ['name' => 'Switzerland', 'currency' => 'CHF', 'team' => 'Neutral'],
             ['name' => 'Sweden', 'currency' => 'SEK', 'team' => 'Neutral'],
-            ['name' => 'Spain', 'currency' => 'Peseta', 'team' => 'Neutral'],
-            ['name' => 'Portugal', 'currency' => 'Escudo', 'team' => 'Neutral'],
-            ['name' => 'Turkey', 'currency' => 'Lira', 'team' => 'Neutral'],
+            ['name' => 'Spain', 'currency' => 'EUR', 'team' => 'Neutral'],
+            ['name' => 'Portugal', 'currency' => 'EUR', 'team' => 'Neutral'],
+            ['name' => 'Turkey', 'currency' => 'TRY', 'team' => 'Neutral'],
         ];
 
         foreach ($countries as $country) {

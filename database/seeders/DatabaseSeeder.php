@@ -21,13 +21,12 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call([
-            UserSeeder::class,
             CountrySeeder::class,
+            UserSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
         ]);
 
-        \App\Models\Product::factory()->count(50)->create();
     }
 
 }

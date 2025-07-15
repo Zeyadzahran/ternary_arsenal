@@ -4,9 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Models\Category;
 use Illuminate\Support\Facades\Session;
-
+use App\Models\Category;
+use App\Services\CurrencyService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind CurrencyService as a singleton
+        $this->app->singleton(CurrencyService::class, function ($app) {
+            return new CurrencyService();
+        });
     }
 
     /**
@@ -23,13 +26,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // this will make in view acsses this var 
-
+        // Share categories and cart count with all views
         View::composer('*', function ($view) {
             $view->with('categories', Category::all());
-                $cart = Session::get('cart', []);
-                $totalItemsInCart = array_sum(array_column($cart, 'quantity'));
-                $view->with('cartCount', $totalItemsInCart);
-                    });
+
+            $cart = Session::get('cart', []);
+            $totalItemsInCart = array_sum(array_column($cart, 'quantity'));
+
+            $view->with('cartCount', $totalItemsInCart);
+        });
     }
 }
