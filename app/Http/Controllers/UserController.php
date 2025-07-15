@@ -2,40 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
- 
     public function index()
     {
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
-            abort(403, 'Admins only');
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->isRuler()) {
+            abort(403, 'Just for world rulers — are you one?');
         }
 
-        $admin = auth()->user();
-        $users = User::where('country_id', $admin->country_id)->get();
+        $users = User::where('role', '!=', 'ruler')->get();
 
-        return view('user.index', compact('users'));
+        return view('users.index', compact('users'));
     }
+
     public function updateRole(User $user)
     {
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
-            abort(403, 'Admins only');
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->isRuler()) {
+            abort(403, 'Only rulers can do that.');
         }
 
-        if ($user->country_id !== auth()->user()->country_id) {
-            abort(403, 'Unauthorized user');
+        if ($user->role === 'ruler') {
+            return back()->with('error', 'You cannot modify another ruler.');
         }
 
         $user->role = $user->role === 'admin' ? 'general' : 'admin';
         $user->save();
 
-        return redirect()->back()->with('success', 'Role updated successfully.');
+        return redirect()->back()->with('success', 'User role updated successfully.');
     }
 
+    public function destroy(User $user)
+    {
+        $authUser = auth()->user();
 
+        if (!$authUser || !$authUser->isRuler()) {
+            abort(403, 'Only rulers can delete users.');
+        }
 
+        if ($user->role === 'ruler') {
+            return back()->with('error', 'You cannot delete another ruler.');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
 }

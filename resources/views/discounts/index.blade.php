@@ -5,7 +5,7 @@
 @section('content')
     <h1 class="text-2xl font-bold mb-6">Discount Management</h1>
 
-    @if(auth()->user()->role === 'admin')
+    @if(auth()->user()?->role === 'admin')
         {{-- Country filter for admins --}}
         <form method="GET" class="mb-4">
             <label for="country_id">Filter by Country:</label>
@@ -28,7 +28,8 @@
         <thead class="bg-gray-100">
             <tr>
                 <th class="border px-4 py-2">Product</th>
-                <th class="border px-4 py-2">Country</th>
+                <th class="border px-4 py-2">Created By</th>
+                <th class="border px-4 py-2">Target Country</th>
                 <th class="border px-4 py-2">Discount %</th>
                 <th class="border px-4 py-2">Actions</th>
             </tr>
@@ -37,7 +38,8 @@
             @forelse($discounts as $discount)
                 <tr>
                     <td class="border px-4 py-2">{{ $discount->product->name }}</td>
-                    <td class="border px-4 py-2">{{ $discount->country->name }}</td>
+                    <td class="border px-4 py-2">{{ $discount->fromCountry?->name ?? 'N/A' }}</td>
+                    <td class="border px-4 py-2">{{ $discount->toCountry?->name }}</td>
                     <td class="border px-4 py-2">{{ $discount->discount_percent }}%</td>
                     <td class="border px-4 py-2">
                         <a href="{{ route('discounts.edit', $discount->id) }}" class="btn-edit">Edit</a>
@@ -50,7 +52,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="text-center p-4">No discounts found.</td></tr>
+                <tr><td colspan="5" class="text-center p-4">No discounts found.</td></tr>
             @endforelse
         </tbody>
     </table>

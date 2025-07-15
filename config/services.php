@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'currency' => [
+        'apikey' => env('CURRENCY_CONVERTOR_API_KEY'),
+    ],
+
 
 ];
