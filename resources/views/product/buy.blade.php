@@ -1,33 +1,57 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Buy Product</h1>
+    <h2>Your Cart</h2>
 
-<ul>
-    <li><strong>Name:</strong> {{ $product->name }}</li>
-    <li><strong>Model:</strong> {{ $product->model }}</li>
-    <li><strong>Category:</strong> {{ $product->category->name ?? '-' }}</li>
-    <li><strong>Country:</strong> {{ $product->country->name ?? '-' }}</li>
-    <li><strong>Price:</strong> {{ $product->price }}</li>
-    <li><strong>Stock:</strong> {{ $product->stock }}</li>
-</ul>
+    @if($orders->isEmpty())
+        <p>No items in your cart.</p>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($orders as $order)
+                    <tr>
+                        <td>{{ $order->product->name }}</td>
+                        <td>${{ number_format($order->product->price, 2) }}</td>
+                         <td>
+                            <form action="{{ route('cart.update', $order->id) }}" method="POST" style="display:flex; align-items:center;">
+                                @csrf
+                                <input type="number" name="quantity" value="{{ $order->quantity }}" min="1" style="width: 60px; margin-right: 5px;">
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>${{ number_format($order->product->price * $order->quantity, 2) }}</td>
+                      <td>
+                        <form action="{{ route('cart.remove', $order->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit">Delete</button>
+                        </form>
 
-@if(session('error'))
-    <p style="color:red;">{{ session('error') }}</p>
-@endif
-@if(session('success'))
-    <p style="color:green;">{{ session('success') }}</p>
-@endif
+                        <form action="{{ route('cart.checkoutSingle', $order->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit">Checkout</button>
+                        </form>
+                    </td>
 
-<form method="POST" action="{{ route('product.buy', $product->id) }}">
-    @csrf
-    <label for="quantity">Quantity:</label>
-    <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" required>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-    <br><br>
-    <button type="submit">Buy Now</button>
-</form>
+        <h4>Total: ${{ number_format($total, 2) }}</h4>
 
-<br>
-<a href="{{ route('product.index') }}">Back to Products</a>
+        <form action="{{ route('cart.checkout') }}" method="POST">
+            @csrf
+            <button type="submit">Checkout All</button>
+        </form>
+    @endif
 @endsection

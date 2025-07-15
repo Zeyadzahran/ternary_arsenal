@@ -8,6 +8,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DiscountController;
+
 use Cloudinary\Cloudinary;
 
 Route::get('/test-cloud', function () {
@@ -35,7 +38,7 @@ Route::view('/', 'welcome');
 
 
 
-Route::get('/register', [RegisterController::class, 'create']);
+Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
@@ -51,5 +54,19 @@ Route::middleware('auth')->group(function () {
 
 // Route::get('/product/live-search', [ProductController::class, 'liveSearch']);
 Route::resource('product', ProductController::class);
-Route::get('/product/{id}/buy', [ProductController::class, 'showBuyPage'])->name('product.buy');
-Route::post('/product/{id}/buy', [ProductController::class, 'buy'])->name('product.buy');
+
+Route::resource('discounts', DiscountController::class)->middleware('auth');
+
+
+
+
+Route::post('/cart/add/{product_id}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.addToCart');
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'showCart'])->name('cart.show');
+Route::delete('/cart/remove/{order_id}', [App\Http\Controllers\CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/checkout', [App\Http\Controllers\CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart/checkout/{order}', [App\Http\Controllers\CartController::class, 'checkoutSingle'])->name('cart.checkoutSingle');
+Route::post('/cart/update/{order}', [App\Http\Controllers\CartController::class, 'updateQuantity'])->name('cart.update');
+
+
+Route::get('/users', [UserController::class, 'index'])->name('user.index');
+Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('user.updateRole');

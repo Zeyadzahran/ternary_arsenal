@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+
+            $table->foreignId('from_country_id')->nullable()->constrained('countries')->nullOnDelete();
+
+            $table->foreignId('to_country_id')->constrained('countries')->cascadeOnDelete();
+
+            $table->decimal('discount_percent', 5, 2)->nullable();
+
             $table->timestamps();
         });
     }
