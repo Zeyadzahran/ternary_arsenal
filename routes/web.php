@@ -80,9 +80,22 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
-Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+// Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
+// Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
+//     Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+// });
+
+
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
-    Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+
+    // 📄 Admins/Rulers sending stock reports
+    Route::get('/send-report', [ReportController::class, 'showStockReportForm'])->name('report.form');
+    Route::post('/send-report', [ReportController::class, 'sendStockReport'])->name('report.send');
+
+    // 📤 Generals sending weapon requests
+    Route::get('/send-request', [ReportController::class, 'showWeaponRequestForm'])->name('request.form');
+    Route::post('/send-request', [ReportController::class, 'handleWeaponRequest'])->name('request.send');
 });
