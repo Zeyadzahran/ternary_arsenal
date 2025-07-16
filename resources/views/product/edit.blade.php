@@ -52,9 +52,6 @@
             <textarea name="description" class="form-control" rows="3">{{ $product->description }}</textarea>
         </div>
 
-    <label>Discounted Price (optional):</label>
-    <input type="number" name="discounted_price" step="0.01" 
-           value="{{ optional($product->discount)->discounted_price }}"><br>
 
     <button type="submit">Update</button>
 </form>
