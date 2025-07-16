@@ -20,6 +20,11 @@
                 <a href="{{ route('cart.show') }}">
                     🛒 Cart ({{ $pendingCount }})
                 </a>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('report.form') }}">📄CSV</a>
+                        </li>
+                    @endauth
 
 
            <form method="GET" action="{{ route('product.index') }}">

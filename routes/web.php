@@ -7,12 +7,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiscountController;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ProductSold;
-use App\Models\User;
 use App\Http\Controllers\CartController;
 use App\Services\CurrencyService;
-
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\ReportController;
 use Cloudinary\Cloudinary;
 
 Route::get('/test-cloud', function () {
@@ -38,6 +36,8 @@ Route::get('/test-currency', function (CurrencyService $currency) {
 
 
 Route::view('/', 'welcome');
+
+
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
@@ -70,18 +70,19 @@ Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.c
 Route::post('/cart/checkout/{order}', [CartController::class, 'checkoutSingle'])->name('cart.checkoutSingle');
 Route::post('/cart/update/{order}', [CartController::class, 'updateQuantity'])->name('cart.update');
 
-
-Route::get('/users', [UserController::class, 'index'])->name('user.index');
-Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('user.updateRole');
-
-
-
-Route::get('test', function () {
-    \Illuminate\Support\Facades\Mail::to('tahanyemad30@gmail.com')->send(new \App\Mail\ProductSold());
-    dd("doneee");
-    return 'Done';
+Route::middleware('auth')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
-Route::get('/test-email', function () {
-    Mail::to('your_email@example.com')->send(new ProductSold());
-    return 'Email sent!';
+
+
+
+
+
+Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
+Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
+    Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
 });

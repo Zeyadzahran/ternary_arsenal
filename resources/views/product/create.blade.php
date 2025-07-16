@@ -56,11 +56,6 @@
             <input type="file" name="image" class="form-control" accept="image/*" required>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Discounted Price (optional):</label>
-            <input type="number" name="discounted_price" class="form-control" step="0.01">
-        </div>
-
         <div class="text-center">
             <button type="submit" class="btn btn-primary px-5">Create</button>
         </div>

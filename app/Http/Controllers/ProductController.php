@@ -106,7 +106,6 @@ class ProductController extends Controller
             'stock'            => 'required|integer',
             'description'      => 'nullable|string',
             'image'            => 'required|image|max:4096',
-            'discounted_price' => 'nullable|numeric|lt:price'
         ]);
 
         $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
@@ -115,13 +114,6 @@ class ProductController extends Controller
         unset($validated['image'], $validated['discounted_price']);
 
         $product = Product::create($validated);
-
-        if ($discountedPrice) {
-            Discount::create([
-                'product_id' => $product->id,
-                'discounted_price' => $discountedPrice,
-            ]);
-        }
 
         return redirect()->route('product.index')->with('success', 'Product created');
     }
@@ -194,12 +186,10 @@ class ProductController extends Controller
             'price'       => ['required', 'numeric', 'min:0'],
             'stock'       => ['nullable', 'int', 'min:0'],
             'description' => ['nullable', 'string'],
-            'discounted_price' => ['nullable', 'numeric', 'min:0'],
             'image'       => ['nullable', 'image', 'max:4096'],
         ]);
 
         $productData = $validated;
-        unset($productData['discounted_price']);
 
         $product = Product::findOrFail($id);
         $user = auth()->user();
@@ -218,14 +208,6 @@ class ProductController extends Controller
 
         $product->update($productData);
 
-        if ($request->filled('discounted_price')) {
-            $product->discount()->updateOrCreate(
-                ['product_id' => $product->id],
-                ['discounted_price' => $request->discounted_price]
-            );
-        } else {
-            $product->discount()->delete();
-        }
 
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
     }
