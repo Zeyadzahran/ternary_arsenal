@@ -1,82 +1,97 @@
-
-
 @extends('layouts.app')
 
 @section('content')
-<div class="product-details-container">
-    <h1 class="product-title">Product Details</h1>
+<div class="product-detail-container">
+    <div class="product-header">
+        <a href="{{ route('product.index') }}" class="back-link">← Back to Products</a>
+        <h1 class="product-title">{{ $product->name }}</h1>
+    </div>
 
-    {{-- ✅ رسالة نجاح لو المنتج اتضاف للكارت --}}
     @if(session('success'))
-        <p style="color: green; font-weight: bold;">{{ session('success') }}</p>
+    <div class="alert-message success">
+        {{ session('success') }}
+    </div>
     @endif
 
-    <div class="product-content">
-        <div class="product-image">
+    <div class="product-display">
+        <div class="product-visual">
             @if($product->image_url)
-                <img src="{{  $product->image_url }}" alt="{{ $product->name }}" class="product-main-image">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="main-image">
             @else
-                <div class="no-image-placeholder">No Image Available</div>
+                <div class="image-placeholder">
+                    <span class="placeholder-icon">📷</span>
+                    <span>No Image Available</span>
+                </div>
             @endif
         </div>
 
         <div class="product-info">
-            <ul class="product-details-list">
-                <li><strong>Name:</strong> {{ $product->name }}</li>
-                <li><strong>Model:</strong> {{ $product->model }}</li>
-                <li><strong>Category:</strong> {{ $product->category->name ?? '-' }}</li>
-                <li><strong>Country:</strong> {{ $product->country->name ?? '-' }}</li>
-               <li><strong>Price:</strong>
-                        @if ($product->discount_percent)
-                            <span style="text-decoration: line-through; color: red;">
-                                {{ number_format($product->converted_old_price, 2) }} {{ $product->viewer_currency }}
-                            </span>
-                            <span style="color: green; font-weight: bold;">
-                                {{ number_format($product->converted_price, 2) }} {{ $product->viewer_currency }} (SALE!)
-                            </span>
-                        @else
-                            <span style="font-weight: bold;">
-                                {{ number_format($product->converted_price, 2) }} {{ $product->viewer_currency }}
-                            </span>
-                        @endif
-                    </li>
-
-                <li><strong>Stock:</strong> {{ $product->stock }}</li>
-              
-           @if(auth()->check())
-            <form method="POST" action="{{ route('cart.addToCart', $product->id) }}">
-                @csrf
-                <label for="quantity">Quantity:</label>
-                <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" required>
-                <br><br>
-                <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px;">
-                    Add to Cart 🛒
-                </button>
-            </form>
-            @else
-                <a href="{{ route('login') }}" onclick="alert('يجب تسجيل الدخول أولًا لإضافة المنتجات إلى السلة'); return true;">
-                     <label for="quantity">Quantity:</label>
-                    <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" required>
-                    <br><br>
-                <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px;">
-                        Add to Cart 🛒
-                    </button>
-                </a>
-            @endif
-
-
-            <br>
-
-            <div class="product-actions">
-                @auth
-                         @if (auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id)
-                        <a href="{{ route('product.edit', $product->id) }}" class="btn-edit">Edit</a>
-                    @endif
-                    
-                @endauth
-                
-                <a href="{{ route('product.index') }}" class="btn-back">Back to List</a>
+            <div class="spec-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Model:</span>
+                    <span class="spec-value">{{ $product->model }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Category:</span>
+                    <span class="spec-value">{{ $product->category->name ?? '-' }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Country:</span>
+                    <span class="spec-value">{{ $product->country->name ?? '-' }}</span>
+                </div>
             </div>
+            @if($product->description)
+    <div class="product-description">
+        <h2>Description</h2>
+        <p>{{ $product->description }}</p>
+    </div>
+@endif
+
+
+            <div class="price-display">
+                <span class="price">{{ number_format($product->converted_price, 2) }} {{ $product->viewer_currency }}</span>
+                @if($product->discount_percent)
+                <span class="discount-tag">Save {{ $product->discount_percent }}%</span>
+                @endif
+            </div>
+            
+
+            <div class="availability {{ $product->stock > 0 ? 'in-stock' : 'out-of-stock' }}">
+                {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                @if($product->stock > 0)
+                <span class="stock-amount">({{ $product->stock }} available)</span>
+                @endif
+            </div>
+
+            <div class="cart-actions">
+                @if(auth()->check())
+                <form method="POST" action="{{ route('cart.addToCart', $product->id) }}">
+                    @csrf
+                    <div class="quantity-control">
+                        <label>Quantity:</label>
+                        <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" required>
+                    </div>
+                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                </form>
+                @else
+                <div class="quantity-control">
+                    <label>Quantity:</label>
+                    <input type="number" min="1" max="{{ $product->stock }}" value="1" disabled>
+                </div>
+                <a href="{{ route('login') }}" class="add-to-cart-btn" onclick="alert('Please login to add products to cart'); return true;">
+                    Add to Cart
+                </a>
+                
+                @endif
+            </div>
+
+            @auth
+            @if(auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id)
+            <div class="admin-options">
+                <a href="{{ route('product.edit', $product->id) }}" class="edit-link">Edit Product</a>
+            </div>
+            @endif
+            @endauth
         </div>
     </div>
 </div>

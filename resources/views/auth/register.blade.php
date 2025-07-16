@@ -1,161 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <meta charset="UTF-8">
-  <title>Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Your E-Commerce Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-circuit">
+  <div class="animated-bg">
+    <div id="particles-js"></div>
+  </div>
 
-<style>
-  body {
-    background-color: #1a0000;
-    background-image: url("https://res.cloudinary.com/dtjflvikd/image/upload/v1751929713/War-Torn_Battlefield_Under_Fiery_Skies_rmkck1.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
+  <main class="auth-container">
+    <div class="auth-card animate-slide-up">
+      <div class="auth-header">
+        <h1 class="gradient-text">Create Account</h1>
+        <p>Join our electric community</p>
+      </div>
 
-  .form-box {
-    background-color: rgba(111, 45, 29, 0.39);
-    padding: 40px;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 500px;
-    box-shadow: 0 0 20px rgba(255, 60, 0, 0.3);
-    backdrop-filter: blur(4px);
-    color: #ffdddd;
-  }
+      <form method="POST" action="/register" class="auth-form">
+        @csrf
 
-  .form-box h2 {
-    text-align: center;
-    color: #ff4d4d;
-    font-size: 2rem;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
-  }
+        <div class="form-group">
+          <label for="name" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+            </svg>
+            Your Name
+          </label>
+          <input type="text" id="name" name="name" class="form-input" required value="{{ old('name') }}">
+          @error('name')
+            <p class="error-message">{{ $message }}</p>
+          @enderror
+        </div>
 
-  label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.95rem;
-    color: #ffbbbb;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+        <div class="form-group">
+          <label for="email" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+            </svg>
+            Email Address
+          </label>
+          <input type="email" id="email" name="email" class="form-input" required value="{{ old('email') }}">
+          @error('email')
+            <p class="error-message">{{ $message }}</p>
+          @enderror
+        </div>
 
-  input, select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    background-color:rgb(58, 43, 43);
-    color: #ffffff;
-    border: 1px solid #ff3333;
-    border-radius: 8px;
-    font-size: 1rem;
-  }
+        <div class="form-group">
+          <label for="password" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+            Password
+          </label>
+          <input type="password" id="password" name="password" class="form-input" required>
+          @error('password')
+            <p class="error-message">{{ $message }}</p>
+          @enderror
+        </div>
 
-  input:focus, select:focus {
-    outline: none;
-    box-shadow: 0 0 5px #ff4d4d;
-    border-color: #ff4d4d;
-  }
+        <div class="form-group">
+          <label for="password_confirmation" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+            Confirm Password
+          </label>
+          <input type="password" id="password_confirmation" name="password_confirmation" class="form-input" required>
+        </div>
 
-  button {
-    width: 100%;
-    padding: 14px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    background: linear-gradient(to right, #990000, #ff3300);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 0 10px rgba(255, 50, 0, 0.6);
-  }
+        <div class="form-group">
+          <label for="country" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+              <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            </svg>
+            Country
+          </label>
+          <select id="country" name="country" class="form-input" required>
+            <option value="">Select your country</option>
+            @foreach($countries as $country)
+              <option value="{{ $country->id }}" {{ old('country') == $country->id ? 'selected' : '' }}>{{ $country->name }}</option>
+            @endforeach
+          </select>
+          @error('country')
+            <p class="error-message">{{ $message }}</p>
+          @enderror
+        </div>
 
-  button:hover {
-    background: linear-gradient(to right, #ff1a1a, #ff6600);
-    color: #000;
-  }
-  .error {
-    color:rgb(15, 1, 1);
-    font-weight: bold;
-    font-size: 1rem;
-    margin-top: 2px;
-  }
-  .have-account {
-  text-align: center;
-  font-size: 1.05rem;
-  margin-top: 25px;
-  color: #ddd;
-  font-family: 'Segoe UI', sans-serif;
-}
+        <button type="submit" class="btn-main btn-block">Register</button>
 
-.have-account a {
-  color:rgb(255, 180, 68);
-  text-decoration: none;
-  font-weight: bold;
-  margin-left: 5px;
-  transition: color 0.3s ease;
-}
-
-.have-account a:hover {
-  color:rgb(197, 157, 113);
-}
-</style>
-
-<div class="form-box">
-  <h2>Register</h2>
-  <form method="POST" action="/register">
-    @csrf 
-
-    <label for="name">Your Name</label>
-    <input type="text" id="name" name="name" required>
-
-    @error('name')
-      <p class="error"> {{ $message }} </p>
-    @enderror
-
-    <label for="email">Your Email</label>
-    <input type="email" id="email" name="email" required>
-
-    @error('email')
-      <p class="error"> {{ $message }} </p>
-    @enderror
-
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" requied>
-
-    @error('password')
-      <p class="error"> {{ $message }} </p>
-    @enderror
-
-    <label for="password_confirmation">Re-enter Password</label>
-    <input type="password" id="password_confirmation" name="password_confirmation" required>
-
-    <label for="country">Country</label>
-    <select id="country" name="country" required>
-      <option value="">Select your country</option>
-      @foreach($countries as $country)
-        <option value="{{ $country->id }}">{{ $country->name }}</option>
-      @endforeach
-    </select>
-
-    @error('country')
-      <p class="error"> {{ $message }} </p>
-    @enderror
-
-    <button type="submit">Register</button>
-
-    <div class="have-account">
-      Already have an account ? 
-      <a href="/login"> Log in </a>
+        <div class="auth-footer">
+          Already have an account? <a href="/login" class="auth-link">Log in</a>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
+  </main>
+
+  <script src="{{ asset('js/app.js') }}"></script>
+</body>
+</html>

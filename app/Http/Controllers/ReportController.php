@@ -1,78 +1,77 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\GeneralReport;
-use App\Models\Order;
 use App\Models\Product;
 use App\Models\Category;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StockReportMail;
+use App\Mail\WeaponRequestMail;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Country;
 
 
 class ReportController extends Controller
 {
-    public function showForm()
+    // ========== REPORT (Admins/Rulers) ==========
+
+    public function showStockReportForm()
     {
-        return view('report.form');
+        return view('report.sendReport');
     }
 
-public function sendReport(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email'
-    ]);
+    public function sendStockReport(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+        ]);
 
-    $user = Auth::user();
-    $role = $user->role;
-    $country = $user->country;
-    $name = $request->input('name');
-    $recipientEmail = $request->input('email');
+        $categories = Category::with('products')->get();
+        $csv = "Category,Product,Stock\n";
 
-    $safeName = str_replace(' ', '_', strtolower($name));
-    $filename = 'report_' . $safeName . '.csv';
-    $csvPath = storage_path("app/reports/{$filename}");
-
-    $csvContent = '';
-
-    if ($role === 'user') {
-        $orders = Order::where('user_id', $user->id)->with('product')->get();
-
-        if ($orders->isEmpty()) {
-            return back()->with('error', 'You have no orders to include in the report.');
-        }
-
-        $csvContent .= "Product,Quantity\n";
-        foreach ($orders as $order) {
-            $csvContent .= $order->product->name . "," . $order->quantity . "\n";
-        }
-
-    } else {
-        $products = Product::where('country_id', auth()->user()->country_id)->with('category')->get();
-
-        if ($products->isEmpty()) {
-            return back()->with('error', 'No products found in your country.');
-        }
-
-        $csvContent .= "Category,Product,Quantity\n";
-        foreach ($products->groupBy('category.name') as $categoryName => $groupedProducts) {
-            foreach ($groupedProducts as $product) {
-                $csvContent .= $categoryName . "," . $product->name . "," . $product->quantity . "\n";
+        foreach ($categories as $cat) {
+            foreach ($cat->products as $product) {
+                $csv .= "{$cat->name},{$product->name},{$product->stock}\n";
             }
         }
+
+        $filename = "stock_report_" . time() . ".csv";
+        $path = storage_path("app/reports/{$filename}");
+        file_put_contents($path, $csv);
+
+        Mail::to($request->email)->send(new StockReportMail($path, $request->name));
+
+        return back()->with('success', 'Stock report sent successfully.');
     }
 
-    file_put_contents($csvPath, $csvContent);
+    // ========== REQUEST (Generals) ==========
 
-    Mail::to($recipientEmail)->send(new \App\Mail\GeneralReport($csvPath, $name));
+    public function showWeaponRequestForm()
+    {
+        return view('report.sendRequest');
+    }
 
-    return back()->with('success', 'Report sent successfully to ' . $recipientEmail);
-}
+    public function handleWeaponRequest(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+            'email' => 'required|email',
+        ]);
 
+        $file = $request->file('csv_file');
+        $filename = 'request_' . time() . '.csv';
+        $path = storage_path("app/requests/{$filename}");
 
+        // ✅ Move the uploaded file manually
+        $file->move(storage_path('app/requests'), $filename);
 
+        // ✅ Get recipient from .env
+        $recipient = env('MAIL_FROM_ADDRESS');
+        Mail::to($recipient)->send(new WeaponRequestMail($path, $request->email));
 
+        return back()->with('success', 'Weapon request sent to HQ.');
+    }
 }

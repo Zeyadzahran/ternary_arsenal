@@ -1,157 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
-    <style>
-  body {
-    background-color: #1a0000;
-    background-image: url("https://res.cloudinary.com/dtjflvikd/image/upload/v1751929713/War-Torn_Battlefield_Under_Fiery_Skies_rmkck1.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
 
-  .form-box {
-    background-color: rgba(111, 45, 29, 0.39);
-    padding: 40px;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 500px;
-    box-shadow: 0 0 20px rgba(255, 60, 0, 0.3);
-    backdrop-filter: blur(4px);
-    color: #ffdddd;
-  }
-
-  .form-box h2 {
-    text-align: center;
-    color: #ff4d4d;
-    font-size: 2rem;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.95rem;
-    color: #ffbbbb;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    background-color:rgb(58, 43, 43);
-    color: #ffffff;
-    border: 1px solid #ff3333;
-    border-radius: 8px;
-    font-size: 1rem;
-  }
-
-  input:focus, select:focus {
-    outline: none;
-    box-shadow: 0 0 5px #ff4d4d;
-    border-color: #ff4d4d;
-  }
-
-  button {
-    width: 100%;
-    padding: 14px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    background: linear-gradient(to right, #990000, #ff3300);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 0 10px rgba(255, 50, 0, 0.6);
-  }
-
-  button:hover {
-    background: linear-gradient(to right, #ff1a1a, #ff6600);
-    color: #000;
-  }
-  .error {
-    color:rgb(15, 1, 1);
-    font-weight: bold;
-    font-size: 1rem;
-    margin-top: 2px;
-  }
-  .no-account {
-  text-align: center;
-  font-size: 1.05rem;
-  margin-top: 25px;
-  color: #ddd;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.no-account a {
-  color:rgb(255, 180, 68);
-  text-decoration: none;
-  font-weight: bold;
-  margin-left: 5px;
-  transition: color 0.3s ease;
-}
-
-.no-account a:hover {
-  color:rgb(197, 157, 113);
-}
-</style>
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Your E-Commerce Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="form-box">
-    <h2>Login</h2>
-    
-   @if(session('success'))
-    <div id="success-message" style="background-color: #d4edda; color: #155724; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center;">
-        {{ session('success') }}
-    </div>
-   @endif
-
-   @if(request('redirect_reason') === 'buy')
-    <p style="color: red">Please login first to buy a product.</p>
-   @endif
-
-    <form method="POST" action="/login">
-      @csrf
-
-      <input type="email" name="email" placeholder="Email" value="{{ old('email') }}">
-      @error('email')
-        <p class="error">{{ $message }}</p>
-      @enderror
-      <input type="password" name="password" placeholder="Password">
-      @error('password')
-        <p class="error">{{ $message }}</p>
-      @enderror
-      <button type="submit" class="btn">Log In</button>
-    </form>
-    <div class="no-account">
-      Don't have an account ? 
-      <a href="/register"> Register </a>
-    </div>
+<body class="bg-circuit">
+  <div class="animated-bg">
+    <div id="particles-js"></div>
   </div>
-  
 
+  <main class="auth-container">
+    <div class="auth-card animate-slide-up">
+      <div class="auth-header">
+        <h1 class="gradient-text">Welcome Back</h1>
+        <p>Login to your electric account</p>
+      </div>
+
+      @if(session('success'))
+        <div class="alert-message success">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+          </svg>
+          {{ session('success') }}
+        </div>
+      @endif
+
+      @if(request('redirect_reason') === 'buy'))
+        <div class="alert-message">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </svg>
+          Please login first to buy a product
+        </div>
+      @endif
+
+      <form method="POST" action="/login" class="auth-form">
+        @csrf
+
+        <div class="form-group">
+          <label for="email" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+            </svg>
+            Email Address
+          </label>
+          <input type="email" id="email" name="email" class="form-input" required value="{{ old('email') }}">
+          @error('email')
+            <p class="error-message">{{ $message }}</p>
+          @enderror
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+            Password
+          </label>
+          <input type="password" id="password" name="password" class="form-input" required>
+          @error('password')
+            <p class="error-message">{{ $message }}</p>
+          @enderror
+        </div>
+
+        <button type="submit" class="btn-main btn-block">Log In</button>
+
+        <div class="auth-footer">
+          Don't have an account? <a href="/register" class="auth-link">Register</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="{{ asset('js/app.js') }}"></script>
 </body>
-<script>
-  setTimeout(() => {
-    const message = document.getElementById('success-message');
-    if (message) {
-      message.style.transition = 'opacity 0.5s ease';
-      message.style.opacity = '0';
-      setTimeout(() => message.remove(), 500);   
-    }
-  }, 3000);
-</script>
-
 </html>
