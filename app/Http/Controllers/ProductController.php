@@ -108,6 +108,9 @@ class ProductController extends Controller
             'image'            => 'required|image|max:4096',
         ]);
 
+
+
+
         $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
 
         $discountedPrice = $validated['discounted_price'] ?? null;

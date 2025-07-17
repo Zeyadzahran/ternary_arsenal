@@ -40,19 +40,18 @@ class ProfileController extends Controller
         return redirect()->route('profile.show')->with('success', 'Profile updated!');
     }
 
-public function destroy(Request $request)
-{
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
 
-    $user = Auth::user();
+        Auth::logout(); 
 
-    Auth::logout(); 
+        $user->delete();
 
-    $user->delete();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect('/')->with('success', 'Your account has been deleted.');
-}
+        return redirect('/')->with('success', 'Your account has been deleted.');
+    }
 
 }
