@@ -51,6 +51,8 @@ class UserSeeder extends Seeder
             ['name' => 'Peter Fraser', 'email' => 'fraser@nz.com', 'password' => Hash::make('12345678'), 'country_id' => 14, 'role' => 'admin'],
             ['name' => 'Mahatma Gandhi', 'email' => 'gandhi@india.com', 'password' => Hash::make('12345678'), 'country_id' => 15, 'role' => 'admin'],
 
+
+
             ['name' => 'Henri Guisan', 'email' => 'guisan@switzerland.com', 'password' => Hash::make('12345678'), 'country_id' => 16, 'role' => 'admin'],
             ['name' => 'Per Albin Hansson', 'email' => 'hansson@sweden.com', 'password' => Hash::make('12345678'), 'country_id' => 17, 'role' => 'admin'],
             ['name' => 'Francisco Franco', 'email' => 'franco@spain.com', 'password' => Hash::make('12345678'), 'country_id' => 18, 'role' => 'admin'],

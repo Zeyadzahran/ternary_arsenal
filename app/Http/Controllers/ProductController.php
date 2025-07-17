@@ -239,6 +239,20 @@ class ProductController extends Controller
                 ];
             });
     }
+    public function toggleBan($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if (auth()->user()->role !== 'ruler') {
+            abort(403, 'غير مصرح لك');
+        }
+
+        $product->is_banned = !$product->is_banned;
+        $product->save();
+
+        return redirect()->back()->with('success', 'تم تحديث حالة الحظر بنجاح.');
+    }
+
 
     public function destroy(string $id)
     {

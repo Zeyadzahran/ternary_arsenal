@@ -41,6 +41,12 @@
                             -{{ $product->discount_percent }}%
                         </div>
                         @endif
+
+                        @if($product->is_banned)
+                        <div class="banned-badge" style="position: absolute; top: 10px; right: 10px; background: red; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px;">
+                            🚫 BANNED
+                        </div>
+                        @endif
                     </div>
 
                     <div class="product-details">
@@ -88,7 +94,7 @@
                             </a>
                             
                             @auth
-                                @if (auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id)
+                                @if (auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id || auth()->user()->role === 'ruler')
                                     <a href="{{ route('product.edit', $product->id) }}" class="btn-action btn-edit">
                                         <span class="btn-icon">✏️</span> Edit
                                     </a>
@@ -102,17 +108,33 @@
                                 @endif
                             @endauth
                             
-                            @auth
-                                <form action="{{ route('cart.addToCart', $product->id) }}" method="POST" class="action-form">
-                                    @csrf
-                                    <button type="submit" class="btn-action btn-cart" {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                                        <span class="btn-icon">🛒</span> Add to Cart
-                                    </button>
-                                </form>
+                            @if($product->is_banned)
+                                <div style="color: red; font-weight: bold;">🚫 Cannot purchase banned product</div>
                             @else
-                                <a href="{{ route('login') }}" onclick="alert('Please login first to add products to cart'); return true;" class="btn-action btn-cart">
-                                    <span class="btn-icon">🛒</span> Add to Cart
-                                </a>
+                                @auth
+                                    <form action="{{ route('cart.addToCart', $product->id) }}" method="POST" class="action-form">
+                                        @csrf
+                                        <button type="submit" class="btn-action btn-cart" {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                            <span class="btn-icon">🛒</span> Add to Cart
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" onclick="alert('Please login first to add products to cart'); return true;" class="btn-action btn-cart">
+                                        <span class="btn-icon">🛒</span> Add to Cart
+                                    </a>
+                                @endauth
+                            @endif
+
+                            @auth
+                                @if(auth()->user()->role === 'ruler')
+                                    <form method="POST" action="{{ route('products.toggleBan', $product->id) }}" class="action-form" style="margin-top: 5px;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn-action" style="background-color: {{ $product->is_banned ? '#28a745' : '#dc3545' }}; color: white;">
+                                            {{ $product->is_banned ? 'Unban' : 'Ban' }}
+                                        </button>
+                                    </form>
+                                @endif
                             @endauth
                         </div>
                     </div>
