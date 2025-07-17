@@ -10,7 +10,7 @@
                 <path d="M4.004 6.417l-.924-2.415h-1.08v1h1.212l1.82 4.659 1.385-1.385-1.413-3.864h14.961v1h-14.16l.771 2h15.389l-2.4 8h-14.4l-2.04-5.21-1.537 1.537.887 2.263-1.832 1.832-1.414-1.414 1.832-1.833-.842-2.15zm16.996 12.583c0 .828-.672 1.5-1.5 1.5s-1.5-.672-1.5-1.5.672-1.5 1.5-1.5 1.5.672 1.5 1.5zm-13 0c0 .828-.672 1.5-1.5 1.5s-1.5-.672-1.5-1.5.672-1.5 1.5-1.5 1.5.672 1.5 1.5z"/>
             </svg>
             <p>Your cart is currently empty</p>
-            <a href="{{ route('products.index') }}" class="btn-main btn-shop">
+            <a href="{{ route('product.index') }}" class="btn-main btn-shop">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>

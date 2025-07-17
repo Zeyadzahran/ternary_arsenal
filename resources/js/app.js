@@ -383,3 +383,225 @@ document.addEventListener('DOMContentLoaded', function () {
         initAuthAnimations();
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Form animation
+    if (document.querySelector('.product-form-container')) {
+        gsap.from('.product-form-container', {
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
+            ease: "back.out"
+        });
+
+        // Input focus animations
+        const inputs = document.querySelectorAll('.form-control, .form-select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input, {
+                    scale: 1.02,
+                    duration: 0.2,
+                    ease: "power1.out"
+                });
+            });
+            
+            input.addEventListener('blur', () => {
+                gsap.to(input, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power1.out"
+                });
+            });
+        });
+
+        // Button ripple effect
+        const submitBtn = document.querySelector('.btn-submit-product');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                this.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 1000);
+            });
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Table row animations
+    gsap.utils.toArray(".discount-table tr").forEach((row, i) => {
+        gsap.from(row, {
+            opacity: 0,
+            y: 20,
+            duration: 0.4,
+            delay: i * 0.05,
+            scrollTrigger: {
+                trigger: row,
+                start: "top 90%",
+                toggleActions: "play none none none"
+            }
+        });
+    });
+
+    // Button hover effects
+    const buttons = document.querySelectorAll('.btn-edit, .btn-delete, .add-discount-btn');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            gsap.to(button, {
+                scale: 1.05,
+                duration: 0.2
+            });
+        });
+        button.addEventListener('mouseleave', () => {
+            gsap.to(button, {
+                scale: 1,
+                duration: 0.2
+            });
+        });
+    });
+
+    // Filter select animation
+    const filterSelect = document.querySelector('.discount-filter select');
+    if (filterSelect) {
+        filterSelect.addEventListener('focus', () => {
+            gsap.to(filterSelect, {
+                borderColor: 'var(--electric-purple)',
+                duration: 0.3
+            });
+        });
+        filterSelect.addEventListener('blur', () => {
+            gsap.to(filterSelect, {
+                borderColor: 'rgba(0, 245, 255, 0.4)',
+                duration: 0.3
+            });
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Form animation
+    if (document.querySelector('.discount-form-container')) {
+        gsap.from('.discount-form-container', {
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
+            ease: "back.out"
+        });
+
+        // Input focus animations
+        const inputs = document.querySelectorAll('.discount-form-select, .discount-form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input, {
+                    scale: 1.02,
+                    duration: 0.2,
+                    ease: "power1.out"
+                });
+            });
+            
+            input.addEventListener('blur', () => {
+                gsap.to(input, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power1.out"
+                });
+            });
+        });
+
+        // Button ripple effect
+        const submitBtn = document.querySelector('.discount-submit-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                this.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 1000);
+            });
+        }
+    }
+});
+
+function initDiscountForm() {
+    // Add focus/blur effects to form elements
+    const formInputs = document.querySelectorAll('.discount-form-select, .discount-form-input');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            gsap.to(input, { 
+                scale: 1.02, 
+                duration: 0.2, 
+                ease: "power1.out",
+                boxShadow: '0 0 0 3px rgba(151, 71, 255, 0.3)'
+            });
+        });
+        input.addEventListener('blur', () => {
+            gsap.to(input, { 
+                scale: 1, 
+                duration: 0.2, 
+                ease: "power1.out",
+                boxShadow: 'none'
+            });
+        });
+    });
+
+    // Add ripple effect to submit button
+    const submitBtn = document.querySelector('.discount-submit-btn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function(e) {
+            const x = e.clientX - e.target.getBoundingClientRect().left;
+            const y = e.clientY - e.target.getBoundingClientRect().top;
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            this.appendChild(ripple);
+            setTimeout(() => { ripple.remove(); }, 1000);
+        });
+    }
+}
+
+// Add this to your DOMContentLoaded event listener
+if (document.querySelector('.discount-form-container')) {
+    initDiscountForm();
+}
+
+
+
+// Add this to your JavaScript to enhance form interactions
+document.addEventListener('DOMContentLoaded', function() {
+    // Add focus/blur effects to form inputs
+    const formInputs = document.querySelectorAll('.product-form .form-control, .product-form .form-select');
+    
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--electric-purple)';
+            this.style.boxShadow = '0 0 0 3px rgba(151, 71, 255, 0.2)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.style.borderColor = 'rgba(0, 245, 255, 0.4)';
+            this.style.boxShadow = 'none';
+        });
+    });
+    
+    // Add animation to the form container
+    const formContainer = document.querySelector('.product-form-container');
+    if (formContainer) {
+        gsap.from(formContainer, {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: "power2.out"
+        });
+    }
+});
+
+
