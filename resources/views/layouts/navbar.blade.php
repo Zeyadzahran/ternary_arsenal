@@ -1,12 +1,15 @@
 <nav>
     <div class="nav-left">
-        <a href="/product" class="logo">
-            <span class="logo-icon"></span> 
+        <a href="/product" class="logo" style="display: flex; align-items: center; gap: 8px;">
+            <img src="https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg"
+                alt="Logo"
+                style="height: 40px; width: 40px; object-fit: cover; border-radius: 50%;">
             <span class="gradient-text">Ternary Arsenal</span>
         </a>
+
         @auth
             @if (auth()->user()->role === 'ruler')
-                <a href="{{ route('users.index') }}" class="nav-link">Users</a>
+                <a href="{{ route('users.index') }}" class="logo ">Users</a>
             @endif
         @endauth
     </div>

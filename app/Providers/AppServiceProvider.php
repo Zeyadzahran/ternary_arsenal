@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Session;
 use App\Models\Category;
 use App\Services\CurrencyService;
+use SimpleSoftwareIO\QrCode\Generator;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Renderer\Image\GdImageBackEnd;
 
 class AppServiceProvider extends ServiceProvider
 {
