@@ -81,15 +81,11 @@ npm run dev
 `⚠️ Make sure to run npm run dev continuously while developing to compile your assets (CSS & JS). You can also use npm run build for production.`
 
 
-### 4. Install Frontend Assets
-```bash
-npm install && npm run dev
-```
-### 5. Create Environment File
+### 4. Create Environment File
 ```bash
 cp .env.example .env
 ```
-### 6. Configure .env
+### 5. Configure .env
 Set your database, mail, and Cloudinary keys:
 ```bash
 //env
@@ -111,15 +107,15 @@ MAIL_FROM_NAME="Ternary Arsenal"
 //Cloudinary
 CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@cloud_name
 ```
-### 7. Generate Application Key
+### 6. Generate Application Key
 ```bash
 php artisan key:generate
 ```
-### 8. Run Migrations
+### 7. Run Migrations
 ```bash
 php artisan migrate
 ```
-### 9. Run the Server
+### 8. Run the Server
 ```bash
 php artisan serve
 Visit: http://localhost:8000
