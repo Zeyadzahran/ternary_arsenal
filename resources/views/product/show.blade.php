@@ -46,8 +46,6 @@
         <p>{{ $product->description }}</p>
     </div>
 @endif
-
-
             <div class="price-display">
                 <span class="price">{{ number_format($product->converted_price, 2) }} {{ $product->viewer_currency }}</span>
                 @if($product->discount_percent)
