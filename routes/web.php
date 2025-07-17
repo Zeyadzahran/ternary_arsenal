@@ -9,7 +9,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CartController;
 use App\Services\CurrencyService;
-
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\ReportController;
 use Cloudinary\Cloudinary;
 
 Route::get('/test-cloud', function () {
@@ -73,4 +74,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
+
+
+
+
+// Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
+// Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
+//     Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
+// });
+
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // 📄 Admins/Rulers sending stock reports
+    Route::get('/send-report', [ReportController::class, 'showStockReportForm'])->name('report.form');
+    Route::post('/send-report', [ReportController::class, 'sendStockReport'])->name('report.send');
+
+    // 📤 Generals sending weapon requests
+    Route::get('/send-request', [ReportController::class, 'showWeaponRequestForm'])->name('request.form');
+    Route::post('/send-request', [ReportController::class, 'handleWeaponRequest'])->name('request.send');
 });
