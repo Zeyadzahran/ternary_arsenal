@@ -282,6 +282,9 @@
                 }, 5000);
             }
         }
+
+
+        
     </script>
 
     @yield('scripts')

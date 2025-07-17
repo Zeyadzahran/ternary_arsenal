@@ -645,3 +645,97 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+// Enhanced Navbar Animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Ripple effect for buttons
+    const buttons = document.querySelectorAll('.btn-main');
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const x = e.clientX - e.target.getBoundingClientRect().left;
+            const y = e.clientY - e.target.getBoundingClientRect().top;
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Nav item hover animations
+    const navItems = document.querySelectorAll('nav a:not(.btn-main, .logo), .sub-nav a');
+    navItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            gsap.to(item, {
+                y: -3,
+                duration: 0.3,
+                ease: "back.out(1.7)"
+            });
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            gsap.to(item, {
+                y: 0,
+                duration: 0.3,
+                ease: "back.out(1.7)"
+            });
+        });
+    });
+
+    // Search input animation
+    const searchInput = document.querySelector('nav input[type="text"]');
+    if (searchInput) {
+        searchInput.addEventListener('focus', () => {
+            gsap.to(searchInput, {
+                scale: 1.05,
+                duration: 0.3,
+                ease: "back.out(1.7)"
+            });
+        });
+        
+        searchInput.addEventListener('blur', () => {
+            gsap.to(searchInput, {
+                scale: 1,
+                duration: 0.3,
+                ease: "back.out(1.7)"
+            });
+        });
+    }
+
+    // Active link detection
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('nav a, .sub-nav a');
+    
+    navLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (currentPath === linkPath || 
+            (currentPath.startsWith(linkPath) && linkPath !== '/')) {
+            link.classList.add('active');
+        }
+    });
+
+    // Navbar scroll effect
+    let lastScroll = 0;
+    const navbar = document.querySelector('nav');
+    
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll <= 0) {
+            navbar.style.transform = 'translateY(0)';
+            return;
+        }
+        
+        if (currentScroll > lastScroll && currentScroll > 100) {
+            // Scroll down
+            navbar.style.transform = 'translateY(-100%)';
+        } else if (currentScroll < lastScroll) {
+            // Scroll up
+            navbar.style.transform = 'translateY(0)';
+        }
+        
+        lastScroll = currentScroll;
+    });
+});
+
