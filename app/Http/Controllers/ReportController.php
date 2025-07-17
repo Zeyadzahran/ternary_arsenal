@@ -11,6 +11,8 @@ use App\Mail\StockReportMail;
 use App\Mail\WeaponRequestMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Country;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 
 class ReportController extends Controller
@@ -22,30 +24,37 @@ class ReportController extends Controller
         return view('report.sendReport');
     }
 
-    public function sendStockReport(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-        ]);
 
-        $categories = Category::with('products')->get();
-        $csv = "Category,Product,Stock\n";
+public function sendStockReport(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email',
+    ]);
 
-        foreach ($categories as $cat) {
-            foreach ($cat->products as $product) {
-                $csv .= "{$cat->name},{$product->name},{$product->stock}\n";
-            }
+    $categories = Category::with('products')->get();
+    $csv = "Category,Product,Stock\n";
+
+    foreach ($categories as $cat) {
+        foreach ($cat->products as $product) {
+            $csv .= "{$cat->name},{$product->name},{$product->stock}\n";
         }
-
-        $filename = "stock_report_" . time() . ".csv";
-        $path = storage_path("app/reports/{$filename}");
-        file_put_contents($path, $csv);
-
-        Mail::to($request->email)->send(new StockReportMail($path, $request->name));
-
-        return back()->with('success', 'Stock report sent successfully.');
     }
+
+    $filename = "stock_report_" . time() . ".csv";
+    $path = storage_path("app/reports/{$filename}");
+    file_put_contents($path, $csv);
+
+    $qrPath = storage_path('app/public/qr-code.png');
+
+    QrCode::format('png')
+    ->size(300)
+    ->generate('https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg', $qrPath);
+
+    Mail::to($request->email)->send(new StockReportMail($path, $request->name, $qrPath));
+
+    return back()->with('success', 'Stock report sent successfully.');
+}
 
     // ========== REQUEST (Generals) ==========
 
@@ -74,4 +83,14 @@ class ReportController extends Controller
 
         return back()->with('success', 'Weapon request sent to HQ.');
     }
+
+
+    public function generateQr()
+    {
+        $url = "https://drive.google.com/file/d/1ogQPKJbssD2eijU6X0qoJEAIkOaRUq8d/view?usp=drive_link";
+        $qr = QrCode::size(300)->generate($url);
+
+        return view('email.stock-report', compact('qr'));
+    }
+
 }
