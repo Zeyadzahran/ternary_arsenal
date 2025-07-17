@@ -4,6 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+      
     "content-hash": "8b422524b4d5c5bf48370dad452c816b",
     "packages": [
         {
@@ -30,10 +31,12 @@
             "autoload": {
                 "psr-0": {
                     "BaconQrCode": "src/"
+
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
+
                 "BSD-2-Clause"
             ],
             "authors": [
@@ -51,6 +54,7 @@
                 "source": "https://github.com/Bacon/BaconQrCode/tree/master"
             },
             "time": "2013-08-27T10:20:42+00:00"
+
         },
         {
             "name": "brick/math",

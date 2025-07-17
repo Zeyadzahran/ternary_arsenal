@@ -3,57 +3,74 @@
 @section('title', 'Add New Discount')
 
 @section('content')
-<div class="discount-form-container animate-slide-up">
-    <h1 class="discount-form-title">Add New Discount</h1>
+<main class="auth-container">
+  <div class="auth-card animate-slide-up">
+    <div class="auth-header">
+      <h1 class="gradient-text">Add New Discount</h1>
+      <p>Specify product, target country, and discount percent</p>
+    </div>
 
-    <form action="{{ route('discounts.store') }}" method="POST">
-        @csrf
+    <form action="{{ route('discounts.store') }}" method="POST" class="auth-form">
+      @csrf
 
-        <div class="discount-form-group">
-            <label for="product_id" class="discount-form-label">
-                <i class="fas fa-box"></i> Product
-            </label>
-            <select name="product_id" id="product_id" required class="discount-form-select">
-                @foreach($products as $product)
-                    <option value="{{ $product->id }}">
-                        {{ $product->name }} ({{ $product->country->name }})
-                    </option>
-                @endforeach
-            </select>
-        </div>
+      <div class="form-group">
+        <label for="product_id" class="form-label">
+          Product
+        </label>
+        <select name="product_id" id="product_id" required class="form-input">
+          <option disabled selected>Select a product</option>
+          @foreach($products as $product)
+            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+              {{ $product->name }} ({{ $product->country->name }})
+            </option>
+          @endforeach
+        </select>
+        @error('product_id')
+          <p class="error-message">{{ $message }}</p>
+        @enderror
+      </div>
 
-        <div class="discount-form-group">
-            <label for="to_country_id" class="discount-form-label">
-                <i class="fas fa-globe"></i> Target Country
-            </label>
-            <select name="to_country_id" id="to_country_id" required class="discount-form-select">
-                @foreach($countries as $country)
-                    <option value="{{ $country->id }}">
-                        {{ $country->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+      <div class="form-group">
+        <label for="to_country_id" class="form-label">
+          Target Country
+        </label>
+        <select name="to_country_id" id="to_country_id" required class="form-input">
+          <option disabled selected>Select a country</option>
+          @foreach($countries as $country)
+            <option value="{{ $country->id }}" {{ old('to_country_id') == $country->id ? 'selected' : '' }}>
+              {{ $country->name }}
+            </option>
+          @endforeach
+        </select>
+        @error('to_country_id')
+          <p class="error-message">{{ $message }}</p>
+        @enderror
+      </div>
 
-        <div class="discount-form-group">
-            <label for="discount_percent" class="discount-form-label">
-                <i class="fas fa-percentage"></i> Discount (%)
-            </label>
-            <input
-                type="number"
-                name="discount_percent"
-                id="discount_percent"
-                min="0"
-                max="100"
-                required
-                class="discount-form-input"
-                placeholder="Enter discount percentage"
-            >
-        </div>
+      <div class="form-group">
+        <label for="discount_percent" class="form-label">
+          Discount (%)
+        </label>
+        <input
+          type="number"
+          name="discount_percent"
+          id="discount_percent"
+          min="0"
+          max="100"
+          required
+          class="form-input"
+          placeholder="Enter discount percentage"
+          value="{{ old('discount_percent') }}"
+        >
+        @error('discount_percent')
+          <p class="error-message">{{ $message }}</p>
+        @enderror
+      </div>
 
-        <button type="submit" class="discount-submit-btn">
-            <i class="fas fa-save"></i> Save Discount
-        </button>
+      <button type="submit" class="btn-main btn-block">
+        Save Discount
+      </button>
     </form>
-</div>
+  </div>
+</main>
 @endsection
