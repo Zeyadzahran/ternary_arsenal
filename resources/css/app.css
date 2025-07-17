@@ -1799,6 +1799,9 @@ footer {
 }
 
 .auth-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     background: rgba(10, 10, 26, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 245, 255, 0.3);
@@ -1807,9 +1810,9 @@ footer {
     width: 100%;
     max-width: 500px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box; 
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
 .auth-card:hover {
     border-color: rgba(151, 71, 255, 0.6);
     box-shadow: 0 25px 60px rgba(0, 245, 255, 0.2);
@@ -1832,9 +1835,12 @@ footer {
 }
 
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    width: 100%;
+     
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        box-sizing: border-box;
 }
 
 
