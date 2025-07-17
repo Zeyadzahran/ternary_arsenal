@@ -39,10 +39,39 @@ body {
     opacity: 0.8;
 }
 
+/* Particles Container */
 #particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    /* Keep behind content but make sure it's visible */
+    opacity: 0.8;
+    /* More visible than before */
+    background: linear-gradient(135deg, rgba(10, 10, 26, 0.9) 0%, rgba(15, 15, 40, 0.9) 100%);
+}
+
+/* Add this to make the particles stand out more against the background */
+.animated-bg::before {
+    content: '';
     position: absolute;
     inset: 0;
-    opacity: 0.2;
+    background: radial-gradient(circle at center,
+            rgba(0, 245, 255, 0.05) 0%,
+            rgba(10, 10, 26, 0.9) 70%);
+    opacity: 1;
+}
+/* Add glow effect to particles */
+canvas[data-generated="true"] {
+    filter: drop-shadow(0 0 5px rgba(151, 71, 255, 0.3));
+}
+
+/* Make the connecting lines more vibrant */
+.particle-js-line {
+    stroke-width: 1.5px;
+    stroke-opacity: 0.6;
 }
 
 /* Navigation */

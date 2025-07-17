@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   @vite(['resources/css/app.css', 'resources/js/app.js'])
+   @extends('layouts.app')
+  
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register | Your E-Commerce Site</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-circuit">
-  <div class="animated-bg">
-    <div id="particles-js"></div>
-  </div>
+ 
 
   <main class="auth-container">
     <div class="auth-card animate-slide-up">
