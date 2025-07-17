@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
+Route::patch('/products/{id}/toggle-ban', [\App\Http\Controllers\ProductController::class, 'toggleBan'])->name('products.toggleBan');
 
 
 

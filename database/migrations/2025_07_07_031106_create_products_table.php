@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->string('image_public_id')->nullable();
             $table->text('description');
+            $table->boolean('is_banned')->default(false);
             $table->timestamps();
             $table->unique(['name', 'model']);
         });
