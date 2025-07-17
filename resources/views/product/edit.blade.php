@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
 <h1>Edit Product</h1>
@@ -55,4 +55,100 @@
 
     <button type="submit">Update</button>
 </form>
+@endsection --}}
+@extends('layouts.app')
+
+@section('content')
+<div class="product-form-container animate-slide-up">
+        <div class="text-center">
+             <h1 class="product-form-title gradient-text"">Edit Product</h1>
+        </div>
+    <form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="product-form">
+        @csrf
+        @method('PUT')
+        
+        <div class="form-group">
+            <label class="form-label">
+                Name:
+            </label>
+            <input type="text" name="name" class="form-input" value="{{ $product->name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Model:
+            </label>
+            <input type="text" name="model" value="{{ $product->model }}" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Category:
+            </label>
+            <select name="category_id" class="form-select"  required>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" @if ($product->category_id == $category->id)  selected @endif>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Country:
+            </label>
+            <select name="country_id" class="form-select" required>
+                @foreach ($countries as $country)
+                    <option value="{{ $country->id }}" @if ($product->country_id == $country->id) selected @endif>
+                        {{ $country->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Price:
+            </label>
+            <input type="number" name="price" value="{{ $product->price }}" step="0.01" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Stock:
+            </label>
+            <input type="number" name="stock" value="{{ $product->stock }}" class="form-input">
+        </div>
+
+        @if(isset($imageUrl))
+            <div class="form-group">
+                <label class="form-label">
+                    Current Image:
+                </label>
+                <img src="{{ $imageUrl }}" alt="Current Image" class="image-preview">
+            </div>
+        @endif
+
+        <div class="form-group">
+            <div class="file-upload-container">
+                <label for="image" class="file-upload-label">
+                    Change Product Image
+                    <input type="file" name="image" accept="image/*" class="form-input" style="display: none;">
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Description:
+            </label>
+            <textarea name="description" class="form-textarea">{{ $product->description }}</textarea>
+        </div>
+
+        <button type="submit" class="btn-update">
+            Update Product
+        </button>
+    </form>
+</div>
 @endsection
