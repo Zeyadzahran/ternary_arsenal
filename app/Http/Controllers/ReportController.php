@@ -49,7 +49,7 @@ public function sendStockReport(Request $request)
 
     QrCode::format('png')
     ->size(300)
-    ->generate('https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg', $qrPath);
+    ->generate('https://drive.google.com/file/d/1yiB8O5Qbz2zsRU-KYq_wVsl5ETCEC0hT/view?usp=drive_link', $qrPath);
 
     Mail::to($request->email)->send(new StockReportMail($path, $request->name, $qrPath));
 
