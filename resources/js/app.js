@@ -605,3 +605,43 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+function initUsersTable() {
+    if (document.querySelector('.users-table')) {
+        gsap.from('.users-table tr', {
+            scrollTrigger: {
+                trigger: '.users-table',
+                start: "top 80%",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out"
+        });
+
+        const roleButtons = document.querySelectorAll('.btn-role');
+        roleButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                this.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 1000);
+            });
+        });
+    }
+}
+
+// Add this to the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    
+    if (document.querySelector('.users-table')) {
+        initUsersTable();
+    }
+});
+

@@ -2365,5 +2365,114 @@ select.form-input {
     }
 }
 
+/* Users Management Styles */
+.users-management-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(10, 10, 26, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 245, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 245, 255, 0.1);
+}
 
+.users-title {
+    font-size: 2rem;
+    color: var(--electric-light);
+    margin-bottom: 1.5rem;
+    position: relative;
+    text-align: center;
+}
+
+.users-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--electric-blue), var(--electric-purple));
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1.5rem 0;
+    overflow: hidden;
+}
+
+.users-table th {
+    background: rgba(151, 71, 255, 0.2);
+    color: var(--electric-blue);
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid rgba(0, 245, 255, 0.3);
+}
+
+.users-table td {
+    padding: 1rem;
+    color: var(--electric-light);
+    border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+    background: rgba(10, 10, 26, 0.4);
+}
+
+.users-table tr:hover td {
+    background: rgba(0, 245, 255, 0.05);
+}
+
+.users-table tr:last-child td {
+    border-bottom: none;
+}
+
+.btn-role {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    background: linear-gradient(90deg, var(--electric-blue), var(--electric-purple));
+    color: var(--electric-dark);
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-role:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.4);
+}
+
+.alert-success {
+    background: rgba(0, 200, 0, 0.15);
+    color: #4dff4d;
+    padding: 1rem;
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .users-management-container {
+        padding: 1rem;
+    }
+    
+    .users-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .users-title {
+        font-size: 1.8rem;
+    }
+}
 
