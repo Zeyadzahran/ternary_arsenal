@@ -7,7 +7,6 @@
     <h1 class="discount-title">Discount Management</h1>
 
     @if(auth()->user()?->role === 'admin')
-        {{-- Country filter for admins --}}
         <form method="GET" class="discount-filter">
             <label for="country_id">Filter by Country:</label>
             <select name="country_id" id="country_id" onchange="this.form.submit()">

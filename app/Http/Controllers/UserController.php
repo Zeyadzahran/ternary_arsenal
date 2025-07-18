@@ -15,7 +15,8 @@ class UserController extends Controller
             abort(403, 'Just for world rulers — are you one?');
         }
 
-        $users = User::where('role', '!=', 'ruler')->get();
+        $users = User::with('country')
+            ->get();
 
         return view('users.index', compact('users'));
     }

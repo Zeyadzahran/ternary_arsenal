@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(auth()->check() && auth()->user()->role === 'admin')
+@if(auth()->check() && auth()->user()->role !== 'general')
 <main class="auth-container">
   <div class="auth-card animate-slide-up">
     <div class="auth-header">

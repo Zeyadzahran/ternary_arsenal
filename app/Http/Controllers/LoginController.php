@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
+
     public function create()
     {
         return view('auth.login');
@@ -30,9 +31,10 @@ class LoginController extends Controller
         request()->session()->regenerate();
 
         $user = Auth::user();
-
+        // session(['auth_user' => $user]);
+        // dd(session('auth_user'));
        
-            return redirect('/product')->with('success', 'Login successful!');
+        return redirect('/product')->with('success', 'Login successful!');
         
     }
 

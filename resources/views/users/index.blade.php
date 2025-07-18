@@ -17,17 +17,17 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Role</th>
+
                     <th>Country</th>
                     <th>Change Role</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
+                @if($user->role !== 'ruler')
                     <tr>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ ucfirst($user->role) }}</td>
                         <td>{{ $user->country->name }}</td>
                         <td>
                             <form method="POST" action="{{ route('users.updateRole', $user->id) }}">
@@ -39,6 +39,7 @@
                             </form>
                         </td>
                     </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>

@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
-    // ========== REPORT (Admins/Rulers) ==========
 
     public function showStockReportForm()
     {
@@ -25,38 +24,37 @@ class ReportController extends Controller
     }
 
 
-public function sendStockReport(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email',
-    ]);
+    public function sendStockReport(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+        ]);
 
-    $categories = Category::with('products')->get();
-    $csv = "Category,Product,Stock\n";
+        $categories = Category::with('products')->get();
+        $csv = "Category,Product,Stock\n";
 
-    foreach ($categories as $cat) {
-        foreach ($cat->products as $product) {
-            $csv .= "{$cat->name},{$product->name},{$product->stock}\n";
+        foreach ($categories as $cat) {
+            foreach ($cat->products as $product) {
+                $csv .= "{$cat->name},{$product->name},{$product->stock}\n";
+            }
         }
+
+        $filename = "stock_report_" . time() . ".csv";
+        $path = storage_path("app/reports/{$filename}");
+        file_put_contents($path, $csv);
+
+        $qrPath = storage_path('app/public/qr-code.png');
+
+        QrCode::format('png')
+            ->size(300)
+            ->generate('https://drive.google.com/file/d/1XAKO3K2y87teARaNiZTAyGAI-j_J5qhg/view?usp=drivesdk', $qrPath);
+
+        Mail::to($request->email)->send(new StockReportMail($path, $request->name, $qrPath));
+
+        return back()->with('success', 'Stock report sent successfully.');
     }
 
-    $filename = "stock_report_" . time() . ".csv";
-    $path = storage_path("app/reports/{$filename}");
-    file_put_contents($path, $csv);
-
-    $qrPath = storage_path('app/public/qr-code.png');
-
-    QrCode::format('png')
-    ->size(300)
-    ->generate('https://drive.google.com/file/d/1yiB8O5Qbz2zsRU-KYq_wVsl5ETCEC0hT/view?usp=drive_link', $qrPath);
-
-    Mail::to($request->email)->send(new StockReportMail($path, $request->name, $qrPath));
-
-    return back()->with('success', 'Stock report sent successfully.');
-}
-
-    // ========== REQUEST (Generals) ==========
 
     public function showWeaponRequestForm()
     {
@@ -74,23 +72,19 @@ public function sendStockReport(Request $request)
         $filename = 'request_' . time() . '.csv';
         $path = storage_path("app/requests/{$filename}");
 
-        // ✅ Move the uploaded file manually
         $file->move(storage_path('app/requests'), $filename);
 
-        // ✅ Get recipient from .env
         $recipient = env('MAIL_FROM_ADDRESS');
-        Mail::to($recipient)->send(new WeaponRequestMail($path, $request->email));
+        $qrPath = storage_path('app/public/qr-code.png');
+
+        QrCode::format('png')
+            ->size(300)
+            ->generate('https://drive.google.com/file/d/1XAKO3K2y87teARaNiZTAyGAI-j_J5qhg/view?usp=drivesdk', $qrPath);
+        Mail::to($recipient)->send(new WeaponRequestMail($path, $request->email, $qrPath));
 
         return back()->with('success', 'Weapon request sent to HQ.');
     }
 
 
-    public function generateQr()
-    {
-        $url = "https://drive.google.com/file/d/1ogQPKJbssD2eijU6X0qoJEAIkOaRUq8d/view?usp=drive_link";
-        $qr = QrCode::size(300)->generate($url);
-
-        return view('email.stock-report', compact('qr'));
-    }
-
+  
 }
