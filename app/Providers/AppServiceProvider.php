@@ -11,6 +11,13 @@ use SimpleSoftwareIO\QrCode\Generator;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Renderer\Image\GdImageBackEnd;
+use Illuminate\Support\Facades\Cache;
+use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
+
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,14 +37,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share categories and cart count with all views
-        View::composer('*', function ($view) {
-            $view->with('categories', Category::all());
-
-            $cart = Session::get('cart', []);
-            $totalItemsInCart = array_sum(array_column($cart, 'quantity'));
-
-            $view->with('cartCount', $totalItemsInCart);
+        $categories = cache()->remember('shared_categories', 60 * 60, function () {
+            return Category::all();
         });
+        View::share('categories', $categories);
+
+      
     }
 }

@@ -27,4 +27,9 @@ class Discount extends Model
     {
         return $this->belongsTo(Country::class, 'to_country_id');
     }
+    public function discountForCountry($countryId)
+    {
+        return $this->discounts->firstWhere('to_country_id', $countryId);
+    }
+    
 }

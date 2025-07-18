@@ -5,7 +5,7 @@
     <div class="page-header">
         <h1 class="page-title gradient-text">Weapon Arsenal Inventory</h1>
         
-        @if(auth()->check() && auth()->user()->role === 'admin')
+        @if(auth()->check() && auth()->user()->role !== 'general')
         <div class="admin-actions">
             <a href="{{ route('product.create') }}" class="btn-main">
                 <span class="btn-icon">+</span> Add New Product
@@ -28,7 +28,7 @@
                 <div class="product-card glow-on-hover">
                     <div class="product-image-container">
                         @if ($product->image_url)
-                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-image">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-image" loading = "lazy">
                         @else
                             <div class="no-image-placeholder">
                                 <span class="placeholder-icon">🔫</span>
@@ -94,7 +94,7 @@
                             </a>
                             
                             @auth
-                                @if (auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id || auth()->user()->role === 'ruler')
+                                @if ( auth()->user()->role === 'ruler' || auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id)
                                     <a href="{{ route('product.edit', $product->id) }}" class="btn-action btn-edit">
                                         <span class="btn-icon">✏️</span> Edit
                                     </a>

@@ -7,6 +7,12 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Services\CurrencyService;
+use App\Mail\CheckoutEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+
 
 class CartController extends Controller
 {
@@ -74,26 +80,54 @@ class CartController extends Controller
         return redirect()->route('cart.show')->with('success', 'Item removed!');
     }
 
-    public function checkout()
+    // public function checkout()
+    // {
+    //     Order::where('user_id', Auth::id())
+    //         ->where('status', 'pending')
+    //         ->update(['status' => 'done']);
+
+    //     return redirect()->route('cart.show')->with('success', 'Checkout successful!');
+    // }
+
+    // public function checkoutSingle(Order $order)
+    // {
+    //     if ($order->user_id !== Auth::id()) {
+    //         abort(403);
+    //     }
+
+    //     $order->status = 'completed';
+    //     $order->save();
+
+    //     return redirect()->back()->with('success', 'The Product successfully purchased');
+    // }
+    public function sendCheckoutEmail()
     {
-        Order::where('user_id', Auth::id())
+        $user = Auth::user();
+
+        $checkoutUrl = URL::signedRoute('checkout.from.email', ['user' => $user->id]);
+
+        $qrPath = storage_path('app/public/qr-code.png');
+
+        QrCode::format('png')
+            ->size(300)
+            ->generate('https://drive.google.com/file/d/1XAKO3K2y87teARaNiZTAyGAI-j_J5qhg/view?usp=drivesdk', $qrPath);
+
+        Mail::mailer('general')->to(env('GENERAL_MAIL_USERNAME'))
+            ->send(new CheckoutEmail($checkoutUrl, $qrPath));
+
+        return redirect()->route('cart.show')->with('success', 'Checkout email sent to Gmail!');
+    }
+    public function checkoutFromEmail(Request $request)
+    {
+        $userId = $request->query('user');
+
+        Order::where('user_id', $userId)
             ->where('status', 'pending')
             ->update(['status' => 'done']);
 
-        return redirect()->route('cart.show')->with('success', 'Checkout successful!');
+        return redirect()->route('cart.show')->with('success', 'Checkout completed via email!');
     }
 
-    public function checkoutSingle(Order $order)
-    {
-        if ($order->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $order->status = 'completed';
-        $order->save();
-
-        return redirect()->back()->with('success', 'The Product successfully purchased');
-    }
 
     public function updateQuantity(Request $request, $order_id)
     {

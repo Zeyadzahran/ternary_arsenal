@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Mail;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -21,13 +22,12 @@ class StockReportMail extends Mailable
     public function build()
     {
         return $this->subject('Stockpile Report')
-                    ->from(env('MAIL_FROM_ADDRESS'), 'Ternary Arsenal')
-                    ->attach($this->filePath)
-                    ->view('emails.stock-report')
-                    ->with([
-                        'senderName' => $this->sender,
-                        'qrImage' => $this->qrPath,
-                    ]);
+            ->from(env('MAIL_FROM_ADDRESS'), 'Ternary Arsenal')
+            ->attach($this->filePath)
+            ->view('emails.stock-report')
+            ->with([
+                'senderName' => $this->sender,
+                'qrImage' => $this->qrPath,
+            ]);
     }
 }
-

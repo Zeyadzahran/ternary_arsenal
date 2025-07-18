@@ -1,102 +1,69 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\DiscountController;
-use App\Http\Controllers\CartController;
-use App\Services\CurrencyService;
-use App\Http\Controllers\MailController;
-use App\Http\Controllers\ReportController;
-use Cloudinary\Cloudinary;
-
-Route::get('/test-cloud', function () {
-    $cloudinary = new Cloudinary([
-        'cloud' => [
-            'cloud_name' => 'ddlxp23kv',
-            'api_key'    => '733545292878257',
-            'api_secret' => 'dRMOVMKJqzfB2M1TqakL8bfI6Hw',
-        ]
-    ]);
-
-    return $cloudinary->image('sample')->toUrl();
-});
-
-Route::get('/check-config', function () {
-    dd(config('cloudinary.cloud_url'));
-});
-
-Route::get('/test-currency', function (CurrencyService $currency) {
-    return $currency->convert(100, 'USD', 'EUR');
-
-});
-
+use App\Http\Controllers\{
+    RegisterController,
+    LoginController,
+    ProductController,
+    ProfileController,
+    UserController,
+    DiscountController,
+    CartController,
+    MailController,
+    ReportController
+};
 
 Route::view('/', 'welcome');
-
-
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
-Route::post('logout', [LoginController::class, 'destroy']);
-
-
+Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
 Route::middleware('auth')->group(function () {
+    // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Cart
+    Route::post('/cart/add/{product_id}', [CartController::class, 'addToCart'])->name('cart.addToCart');
+    Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
+    Route::delete('/cart/remove/{order_id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/update/{order}', [CartController::class, 'updateQuantity'])->name('cart.update');
+
+    // Checkout via email
+    Route::get('/checkout/confirm', [CartController::class, 'checkoutFromEmail'])->name('checkout.from.email');
+    Route::post('/checkout/send-email', [CartController::class, 'sendCheckoutEmail'])->name('cart.email.checkout');
+
+    // Weapon Request (normal users)
+    Route::get('/send-request', [ReportController::class, 'showWeaponRequestForm'])->name('request.form');
+    Route::post('/send-request', [ReportController::class, 'handleWeaponRequest'])->name('request.send');
 });
 
+Route::resource('product', ProductController::class)->only(['index', 'show']);
 
-// Route::get('/product/live-search', [ProductController::class, 'liveSearch']);
-Route::resource('product', ProductController::class);
+//  Admin Only
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    // Product Management
+    Route::patch('/products/{id}/toggle-ban', [ProductController::class, 'toggleBan'])->name('products.toggleBan');
+    Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('/product', [ProductController::class, 'store'])->name('product.store');
+    Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
 
-Route::resource('discounts', DiscountController::class)->middleware('auth');
-
-
-
-
-Route::post('/cart/add/{product_id}', [CartController::class, 'addToCart'])->name('cart.addToCart');
-Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
-Route::delete('/cart/remove/{order_id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::post('/cart/checkout/{order}', [CartController::class, 'checkoutSingle'])->name('cart.checkoutSingle');
-Route::post('/cart/update/{order}', [CartController::class, 'updateQuantity'])->name('cart.update');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-});
-
-
-Route::patch('/products/{id}/toggle-ban', [\App\Http\Controllers\ProductController::class, 'toggleBan'])->name('products.toggleBan');
-
-
-
-// Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
-// Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/report-request', [ReportController::class, 'showForm'])->name('report.form');
-//     Route::post('/report-request', [ReportController::class, 'sendReport'])->name('report.send');
-// });
-
-
-
-Route::middleware(['auth'])->group(function () {
-
-    // 📄 Admins/Rulers sending stock reports
+    // Reports 
     Route::get('/send-report', [ReportController::class, 'showStockReportForm'])->name('report.form');
     Route::post('/send-report', [ReportController::class, 'sendStockReport'])->name('report.send');
 
-    // 📤 Generals sending weapon requests
-    Route::get('/send-request', [ReportController::class, 'showWeaponRequestForm'])->name('request.form');
-    Route::post('/send-request', [ReportController::class, 'handleWeaponRequest'])->name('request.send');
+    // Discount Management
+    Route::resource('discounts', DiscountController::class);
+
+    // User Management
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
