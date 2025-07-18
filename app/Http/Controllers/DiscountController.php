@@ -123,11 +123,12 @@ class DiscountController extends Controller
     private function getAvailableProducts()
     {
         if (auth()->user()->isRuler()) {
-            return Product::all();
+            return Product::with('country')->get(); 
         }
 
-        return Product::where('country_id', auth()->user()->country_id)->get();
+        return Product::with('country')->where('country_id', auth()->user()->country_id)->get();
     }
+
 
     private function getAvailableCountries()
     {

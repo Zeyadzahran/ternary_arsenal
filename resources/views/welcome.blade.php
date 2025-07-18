@@ -1,4 +1,3 @@
-@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Custom styles for welcome page that extend app.css */
+       
         .welcome-hero {
             text-align: center;
             padding: 120px 20px 80px;

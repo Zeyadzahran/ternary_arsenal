@@ -66,15 +66,6 @@
                                     </svg>
                                 </button>
                             </form>
-
-                            <form action="{{ route('cart.checkoutSingle', $order->id) }}" method="POST" class="action-form">
-                                @csrf
-                                <button type="submit" class="btn-checkout" title="Checkout this item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -87,13 +78,13 @@
                     <span class="amount">{{ number_format($total, 2) }}</span>
                 </div>
 
-                <form action="{{ route('cart.checkout') }}" method="POST" class="checkout-form">
+               <form action="{{ route('cart.email.checkout') }}" method="POST" class="checkout-form">
                     @csrf
                     <button type="submit" class="btn-main btn-checkout-all">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                         </svg>
-                        Checkout All Items
+                        Send Checkout Email
                     </button>
                 </form>
             </div>

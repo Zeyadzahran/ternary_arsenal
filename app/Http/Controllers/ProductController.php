@@ -25,7 +25,7 @@ class ProductController extends Controller
     public function index(Request $request, CurrencyService $currencyService)
     {
         //  1 ->  query the products
-        $query = Product::with(['category', 'country']);
+        $query = Product::with(['category', 'country' ]);
 
         // 2 =>   filter by the name and model 
         if ($request->filled('query')) {
@@ -48,10 +48,19 @@ class ProductController extends Controller
 
         // 5 =>  get the products
         $products = $query->get();
+        // dd($products);
 
         // 6  =>  get user currency
         $user = auth()->user();
-        $userCurrency = $user?->country?->currency ?? 'USD';
+        $userCountry = $products
+            ->pluck('country') 
+            ->filter() 
+            ->firstWhere('id', $user?->country_id); 
+        $userCurrency = $userCountry?->currency ?? 'USD';
+
+        $discounts = Discount::where('to_country_id', $user?->country_id ?? null)
+            ->get()
+            ->keyBy('product_id');
 
         // 7 =>  add to each product their img url , discount and their converted price
         foreach ($products as $product) {
@@ -61,9 +70,11 @@ class ProductController extends Controller
                 : null;
 
             // discount
-            $discount = Discount::where('product_id', $product->id)
-                ->where('to_country_id', $user?->country_id ?? null)
-                ->first();
+            $discount = $discounts[$product->id] ?? null;
+
+            // $discount = Discount::where('product_id', $product->id)
+            //     ->where('to_country_id', $user?->country_id ?? null)
+            //     ->first();
 
             $originalPrice = $product->price;
 
