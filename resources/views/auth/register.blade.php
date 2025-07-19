@@ -1,9 +1,9 @@
+@extends('layouts.app')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   @extends('layouts.app')
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register | Your E-Commerce Site</title>
@@ -17,7 +17,13 @@
       <div class="auth-header">
         <h1 class="gradient-text">Create Account</h1>
         <p>Join our electric community</p>
+        <a href="/product" class="logo" style="display: flex; align-items: center;text-decoration: none;display: flex; justify-content: center;">
+            <img src="https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg"
+                alt="Logo"
+                style="height: 90px; width: 90px; border-radius: 70%;">
+        </a>
       </div>
+      
 
       <form method="POST" action="/register" class="auth-form">
         @csrf
@@ -102,3 +108,4 @@
 
 </body>
 </html>
+@endsection

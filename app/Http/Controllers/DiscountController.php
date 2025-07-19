@@ -13,22 +13,31 @@ use App\Models\Product;
 
 class DiscountController extends Controller
 {
-    public function index()
-    {
-        $user = auth()->user();
+   public function index(Request $request)
+{
+    $user = auth()->user();
 
-        $query = Discount::with(['product', 'toCountry', 'fromCountry']);
+    $query = Discount::with(['product', 'toCountry', 'fromCountry']);
 
-        if ($user->isAdmin()) {
-            $teamCountryIds = $this->getTeamCountries()->pluck('id');
-            $query->whereIn('to_country_id', $teamCountryIds);
-        }
-
-        $discounts = $query->get();
-        $countries = $this->getAvailableCountries();
-
-        return view('discounts.index', compact('discounts', 'countries'));
+    if ($user->isAdmin()) {
+        $teamCountryIds = $this->getTeamCountries()->pluck('id');
+        $query->whereIn('to_country_id', $teamCountryIds);
     }
+
+    if ($request->filled('country')) {
+        $query->where('to_country_id', $request->country);
+    }
+
+    $discounts = $query->get();
+
+    // Get countries based on role
+    $countries = $user->role === 'ruler'
+        ? Country::all()
+        : $this->getTeamCountries();
+
+    return view('discounts.index', compact('discounts', 'countries'));
+}
+
 
     public function create()
     {

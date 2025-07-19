@@ -45,9 +45,8 @@
     <div class="animated-bg">
         <div id="particles-js"></div>
     </div>
-    @auth
     @include('layouts.navbar')
-    @endauth
+    
     
     <main class="container">
         @yield('content')
@@ -57,7 +56,7 @@
     @include('layouts.footer')
     @endauth
     
-  
+  @if (request()->routeIs('product.index'))
     <script>
         class TernaryArsenalApp {
             constructor() {
@@ -371,7 +370,7 @@
         // Expose app instance for debugging
         window.TernaryApp = app;
     </script>
-
+  @endif
     @yield('scripts')
 </body>
 </html>

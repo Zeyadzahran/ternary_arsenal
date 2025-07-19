@@ -1,7 +1,9 @@
+@extends('layouts.app')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  @extends('layouts.app')
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | Your E-Commerce Site</title>
@@ -15,8 +17,14 @@
       <div class="auth-header">
         <h1 class="gradient-text">Welcome Back</h1>
         <p>Login to your electric account</p>
-      </div>
+         <a href="/product" class="logo" style="display: flex; align-items: center;text-decoration: none;display: flex; justify-content: center;">
+            <img src="https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg"
+                alt="Logo"
+                style="height: 90px; width: 90px; border-radius: 70%;">
+        </a>
 
+      </div>
+   
       @if(session('success'))
         <div class="alert-message success">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -77,3 +85,4 @@
   
 </body>
 </html>
+@endsection

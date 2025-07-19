@@ -171,24 +171,30 @@ class ProductController extends Controller
 
 
 
-    public function edit(string $id)
-    {
-        $product = Product::findOrFail($id);
-        $user = auth()->user();
+   public function edit(string $id)
+{
+    $product = Product::findOrFail($id);
+    $user = auth()->user();
 
-        if ($user->role !== 'admin' || $user->country_id !== $product->country_id) {
-            abort(403, 'Unauthorized access.');
-        }
-
-        $categories = Category::all();
+    if ($user->role === 'ruler') {
         $countries = Country::all();
-
-        return view('product.edit', [
-            'product' => $product,
-            'categories' => $categories,
-            'countries' => $countries
-        ]);
     }
+    elseif ($user->role === 'admin' && $user->country_id === $product->country_id) {
+        $countries = Country::where('id', $user->country_id)->get();
+    }
+    else {
+        abort(403, 'Unauthorized access.');
+    }
+
+    $categories = Category::all();
+
+    return view('product.edit', [
+        'product' => $product,
+        'categories' => $categories,
+        'countries' => $countries
+    ]);
+}
+
 
     public function update(Request $request, string $id)
     {
@@ -208,9 +214,16 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $user = auth()->user();
 
-        if ($user->role !== 'admin' || $user->country_id !== $product->country_id) {
-            abort(403, 'Unauthorized update.');
+        if ($user->role === 'ruler') {
+            $countries = Country::all();
         }
+        elseif ($user->role === 'admin' && $user->country_id === $product->country_id) {
+            $countries = Country::where('id', $user->country_id)->get();
+        }
+        else {
+            abort(403, 'Unauthorized access.');
+        }
+
 
         if ($request->hasFile('image')) {
             if ($product->image_public_id) {
