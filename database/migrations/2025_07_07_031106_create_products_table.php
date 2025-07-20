@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->double('price');
             $table->integer('stock')->default(0);
-            $table->string('image_public_id')->nullable();
+            $table->string('image_url')->nullable();
             $table->text('description');
             $table->boolean('is_banned')->default(false);
             $table->timestamps();

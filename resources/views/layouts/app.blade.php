@@ -56,7 +56,7 @@
     @include('layouts.footer')
     @endauth
     
-  @if (request()->routeIs('product.index'))
+@if (Route::currentRouteName() !== 'product.index')
     <script>
         class TernaryArsenalApp {
             constructor() {

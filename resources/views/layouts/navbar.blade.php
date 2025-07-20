@@ -1,4 +1,4 @@
-<nav>
+<nav class="main-nav">
     <div class="nav-left">
         <a href="/product" class="logo" style="display: flex; align-items: center; gap: 8px;">
             <img src="https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg"
@@ -9,12 +9,11 @@
     </div>
 
     <div class="nav-right">
+        @auth
         <form method="GET" action="{{ route('product.index') }}" class="nav-search-form">
             <input type="text" name="query" placeholder="Search weapons..." value="{{ request('query') }}">
             <button type="submit">🔍</button>
         </form>
-
-        @auth
             <div class="nav-item-wrapper">
                 @php
                     $pendingCount = \App\Models\Order::where('user_id', Auth::id())->where('status', 'pending')->count();
@@ -78,7 +77,13 @@
 </div>
 
 <style>
-   
+   .main-nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: #100e0e; 
+}
+
     .nav-item-wrapper {
         position: relative;
     }
@@ -142,4 +147,11 @@
     .sub-nav-link.active::after {
         width: 100%;
     }
+    .sub-nav {
+    position: sticky;
+    top: 70px;
+    z-index: 998;
+    background: #100e0e; 
+}
+
 </style>

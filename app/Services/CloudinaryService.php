@@ -6,8 +6,6 @@ use Cloudinary\Cloudinary;
 
 class CloudinaryService
 {
-
-
     protected Cloudinary $cloudinary;
 
     public function __construct()
@@ -21,16 +19,15 @@ class CloudinaryService
         ]);
     }
 
-
     public function uploadImage($file, $folder = 'products'): string
     {
         $uploaded = $this->cloudinary->uploadApi()->upload($file->getRealPath(), [
             'folder' => $folder,
             'quality' => 'auto',
-            'fetch_format' => 'auto', 
+            'fetch_format' => 'auto',
         ]);
 
-        return $uploaded['public_id'];
+        return $uploaded['secure_url']; // رجّع الرابط النهائي للصورة
     }
 
     public function deleteImage(string $publicId): void
