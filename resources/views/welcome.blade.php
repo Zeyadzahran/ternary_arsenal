@@ -232,7 +232,7 @@
 
         .country-image {
             width: 100%;
-            height: 400px;
+            height: 450px;
             background-size: cover;
             background-position: center;
             border-radius: 12px;
@@ -279,7 +279,7 @@
             }
 
             .country-image {
-                height: 300px;
+                height: 350px;
                 order: -1;
             }
         }
@@ -344,8 +344,8 @@
             
             <div class="cta-buttons">
                 <a href="/register" class="welcome-btn">Join The Arsenal</a>
-                <a href="/login" class="welcome-btn secondary">Operator Access</a>
-                <a href="/product" class="welcome-btn">Browse Collection</a>
+                <a href="/login" class="welcome-btn secondary">Enter Now</a>
+                <a href="/product" class="welcome-btn">Browse Products</a>
             </div>
         </section>
         
@@ -385,8 +385,7 @@
                     </div>
                 </div>
                 
-                <div class="country-image" style="background-image: url('https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                    <div class="image-caption">German Panzer division advancing through Poland, September 1939</div>
+                <div class="country-image" style="background-image: url('https://res.cloudinary.com/ddlxp23kv/image/upload/v1752884577/photo_2025-07-19_03-20-17_s98aeo.jpg">
                 </div>
             </div>
         </section>
@@ -427,8 +426,7 @@
                     </div>
                 </div>
                 
-                <div class="country-image" style="background-image: url('https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                    <div class="image-caption">RAF Spitfires engage German bombers during the Battle of Britain, 1940</div>
+                <div class="country-image" style="background-image: url('https://res.cloudinary.com/ddlxp23kv/image/upload/v1752885740/photo_2025-07-19_03-41-40_iur0bv.jpg">
                 </div>
             </div>
         </section>
@@ -469,8 +467,7 @@
                     </div>
                 </div>
                 
-                <div class="country-image" style="background-image: url('https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                    <div class="image-caption">Soviet soldiers raising the flag over the Reichstag, Berlin 1945</div>
+                <div class="country-image" style="background-image: url('https://res.cloudinary.com/ddlxp23kv/image/upload/v1752886811/photo_2025-07-19_03-59-50_z8m3rg.jpg">
                 </div>
             </div>
         </section>
@@ -511,8 +508,7 @@
                     </div>
                 </div>
                 
-                <div class="country-image" style="background-image: url('https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                    <div class="image-caption">Swiss border guards patrol mountainous terrain, 1943</div>
+                <div class="country-image" style="background-image: url('https://res.cloudinary.com/ddlxp23kv/image/upload/v1752885739/photo_2025-07-19_03-41-43_hm3vyb.jpg">
                 </div>
             </div>
         </section>

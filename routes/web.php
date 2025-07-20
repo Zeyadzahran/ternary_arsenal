@@ -43,7 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/send-request', [ReportController::class, 'handleWeaponRequest'])->name('request.send');
 });
 
-Route::resource('product', ProductController::class)->only(['index', 'show']);
 
 //  Admin Only
 Route::middleware(['auth', 'isAdmin'])->group(function () {
@@ -67,3 +66,5 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
+
+Route::resource('product', ProductController::class)->only(['index', 'show']);

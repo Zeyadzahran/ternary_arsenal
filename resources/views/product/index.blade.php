@@ -2,9 +2,8 @@
 
 @section('content')
 <div class="products-container">
-    <div class="page-header">
+        <div class="page-header">
         <h1 class="page-title gradient-text">Weapon Arsenal Inventory</h1>
-        
         @if(auth()->check() && auth()->user()->role !== 'general')
         <div class="admin-actions">
             <a href="{{ route('product.create') }}" class="btn-main">

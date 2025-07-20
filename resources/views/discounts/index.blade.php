@@ -6,19 +6,21 @@
 <div class="discount-management-container animate-slide-up">
     <h1 class="discount-title">Discount Management</h1>
 
-    @if(auth()->user()?->role === 'admin')
-        <form method="GET" class="discount-filter">
-            <label for="country_id">Filter by Country:</label>
-            <select name="country_id" id="country_id" onchange="this.form.submit()">
+      @if(in_array(auth()->user()?->role, ['admin', 'ruler']))
+        <form method="GET" action="{{ route('discounts.index') }}" class="discount-filter">
+            <label for="country">Filter by Country:</label>
+            <select name="country" id="country" onchange="this.form.submit()">
                 <option value="">All Countries</option>
                 @foreach($countries as $country)
-                    <option value="{{ $country->id }}" {{ request('country_id') == $country->id ? 'selected' : '' }}>
+                    <option value="{{ $country->id }}" {{ request('country') == $country->id ? 'selected' : '' }}>
                         {{ $country->name }}
                     </option>
                 @endforeach
             </select>
         </form>
-    @endif
+        @endif
+
+
 
     <div class="text-right">
         <a href="{{ route('discounts.create') }}" class="add-discount-btn">

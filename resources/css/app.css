@@ -144,7 +144,7 @@ nav {
 /* Buttons */
 .btn-main {
     padding: 0.5rem 1.5rem;
-    border-radius: 4px;
+    border-radius: 3px;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -292,7 +292,7 @@ footer {
 }
 
 .gradient-text {
-    background: linear-gradient(90deg, var(--electric-blue), var(--electric-purple), var(--electric-pink));
+    background: linear-gradient(90deg, var(--electric-blue));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
