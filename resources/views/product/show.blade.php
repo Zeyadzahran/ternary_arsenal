@@ -12,7 +12,6 @@
         {{ session('success') }}
     </div>
     @endif
-
     <div class="product-display">
         <div class="product-visual">
             @if($product->image_url)
@@ -84,12 +83,29 @@
             </div>
 
             @auth
-            @if(auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id)
-            <div class="admin-options">
-                <a href="{{ route('product.edit', $product->id) }}" class="edit-link">Edit Product</a>
-            </div>
-            @endif
+                @if((auth()->user()->role === 'admin' && auth()->user()->country_id === $product->country_id )|| auth()->user()->role==="rule")
+                <div class="admin-options">
+                    <a href="{{ route('product.edit', $product->id) }}" class="edit-link">Edit Product</a>
+                </div>
+                    <form method="POST" action="{{ route('product.destroy', $product->id) }}" class="action-form">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" onclick="return confirm('Delete this product?')" class="btn-action btn-delete">
+                            <span class="btn-icon">🗑️</span> Delete
+                        </button>
+                    </form>
+                @endif
+                @if(auth()->user()->role === 'ruler')
+                    <form method="POST" action="{{ route('products.toggleBan', $product->id) }}" class="action-form" style="margin-top: 5px;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn-action" style="background-color: {{ $product->is_banned ? '#28a745' : '#dc3545' }}; color: white;">
+                            {{ $product->is_banned ? 'Unban' : 'Ban' }}
+                        </button>
+                    </form>
+                @endif
             @endauth
+            
         </div>
     </div>
 </div>

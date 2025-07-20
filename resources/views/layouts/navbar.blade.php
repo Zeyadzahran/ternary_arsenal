@@ -1,6 +1,6 @@
 <nav class="main-nav">
     <div class="nav-left">
-        <a href="/product" class="logo" style="display: flex; align-items: center; gap: 8px;">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px;">
             <img src="https://res.cloudinary.com/ddlxp23kv/image/upload/v1752774717/photo_2025-07-17_16-14-56_cyyyzj.jpg"
                 alt="Logo"
                 style="height: 40px; width: 40px; object-fit: cover; border-radius: 50%;">
@@ -20,7 +20,7 @@
                 @endphp
                 <a href="{{ route('cart.show') }}" class="nav-btn {{ request()->routeIs('cart.show') ? 'active' : '' }}" data-count="{{ $pendingCount }}">
                     <span class="nav-btn-icon">🛒</span>
-                    <span class="nav-btn-text">Cart</span>
+                    <span class="navF-btn-text">Cart</span>
                 </a>
             </div>
 
@@ -68,6 +68,10 @@
 </nav>
 
 <div class="sub-nav">
+    <a href="{{ route('product.index')}}" 
+       class="sub-nav-link">
+         All 
+    </a>
     @foreach($categories as $category)
         <a href="{{ route('product.index', ['category' => $category->id]) }}" 
            class="sub-nav-link {{ request('category') == $category->id ? 'active' : '' }}">
@@ -77,13 +81,12 @@
 </div>
 
 <style>
-   .main-nav {
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    background: #100e0e; 
-}
-
+    .main-nav {
+       position: sticky;
+       top: 0;
+       z-index: 999;
+    } 
+    
     .nav-item-wrapper {
         position: relative;
     }
@@ -106,6 +109,7 @@
         background: rgba(151, 71, 255, 0.2);
         border-color: rgba(151, 71, 255, 0.3);
     }
+
 
     .nav-btn.active {
         background: rgba(0, 245, 255, 0.2);
@@ -147,11 +151,10 @@
     .sub-nav-link.active::after {
         width: 100%;
     }
-    .sub-nav {
+     .sub-nav {
     position: sticky;
     top: 70px;
     z-index: 998;
-    background: #100e0e; 
-}
+    } 
 
 </style>

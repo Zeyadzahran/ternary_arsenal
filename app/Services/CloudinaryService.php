@@ -27,7 +27,7 @@ class CloudinaryService
             'fetch_format' => 'auto',
         ]);
 
-        return $uploaded['secure_url']; // رجّع الرابط النهائي للصورة
+        return $uploaded['secure_url'];
     }
 
     public function deleteImage(string $publicId): void
