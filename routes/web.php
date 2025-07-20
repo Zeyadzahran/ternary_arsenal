@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\{
     RegisterController,
     LoginController,
@@ -68,3 +70,14 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 });
 
 Route::resource('product', ProductController::class)->only(['index', 'show']);
+
+
+//forget password
+Route::controller(ResetPasswordController::class)
+    ->middleware('guest')
+    ->group(function () {
+        Route::get('forgot-password', 'showLinkRequestForm')->name('password.request');
+        Route::post('forgot-password', 'sendResetLinkEmail')->name('password.email');
+        Route::get('reset-password/{token}', 'showResetForm')->name('password.reset');
+        Route::post('reset-password', 'reset')->name('password.update');
+    });

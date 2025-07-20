@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -343,8 +346,6 @@
             <p class="tagline">Authentic WW2 Weapons • Verified Collectibles • Battlefield Relics</p>
             
             <div class="cta-buttons">
-                <a href="/register" class="welcome-btn">Join The Arsenal</a>
-                <a href="/login" class="welcome-btn secondary">Enter Now</a>
                 <a href="/product" class="welcome-btn">Browse Products</a>
             </div>
         </section>
@@ -572,3 +573,5 @@
     </script>
 </body>
 </html>
+
+@endsection

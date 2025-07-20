@@ -71,6 +71,9 @@
             <p class="error-message">{{ $message }}</p>
           @enderror
         </div>
+        <div style="text-align: center;">
+          <a href="{{ route('password.request') }}" class="auth-link">Forgot Your Password?</a>
+        </div>
 
         <button type="submit" class="btn-main btn-block ripple">Log In</button>
 

@@ -130,25 +130,54 @@
             </div>
         @endif
 
-        <div class="form-group">
-            <div class="file-upload-container">
-                <label for="image" class="file-upload-label">
-                    Change Product Image
-                    <input type="file" name="image" accept="image/*" class="form-input" style="display: none;">
-                </label>
-            </div>
-        </div>
+      <div class="form-group">
+    <label class="form-label">Change Product Image</label>
 
-        <div class="form-group">
-            <label class="form-label">
-                Description:
-            </label>
-            <textarea name="description" class="form-textarea">{{ $product->description }}</textarea>
-        </div>
+    <div class="custom-upload-box" onclick="document.getElementById('image').click();">
+        <span id="upload-text">Click here to choose image</span>
+    </div>
 
-        <button type="submit" class="btn-update">
-            Update Product
-        </button>
-    </form>
+    <input id="image" type="file" name="image" accept="image/*" style="display: none;" onchange="showFileName(this)">
+
+    <p id="file-name" style="margin-top: 10px; font-style: italic;"></p>
+    <img id="image-preview" style="max-width: 150px; margin-top: 10px; display: none;" />
 </div>
+
+
+<div class="form-group">
+    <label class="form-label">
+        Description:
+    </label>
+    <textarea name="description" class="form-textarea">{{ $product->description }}</textarea>
+</div>
+
+<button type="submit" class="btn-update">
+    Update Product
+</button>
+</form>
+</div>
+    <style>
+    .custom-upload-box {
+        border: 2px dashed #aaa;
+        padding: 20px;
+        text-align: center;
+        color: #777;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+    
+    .custom-upload-box:hover {
+        background-color: #f9f9f9;
+        border-color: #555;
+        color: #000;
+    }
+    </style>
+    <script>
+    function showFileName(input) {
+        const fileName = input.files[0]?.name;
+        document.getElementById('file-name').textContent = fileName ? `Selected: ${fileName}` : '';
+    }
+</script>
+            
 @endsection

@@ -65,9 +65,8 @@ class ProductController extends Controller
         // 7 =>  add to each product their img url , discount and their converted price
         foreach ($products as $product) {
             // img url 
-            $product->image_url = $product->image_public_id
-                ? $this->cloudinary->getImageUrl($product->image_public_id)
-                : null;
+             $product->image_url = $product->image_url;
+
 
             // discount
             $discount = $discounts[$product->id] ?? null;
@@ -119,10 +118,7 @@ class ProductController extends Controller
             'image'            => 'required|image|max:4096',
         ]);
 
-
-
-
-        $validated['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
+        $validated['image_url'] = $this->cloudinary->uploadImage($request->file('image'));
 
         $discountedPrice = $validated['discounted_price'] ?? null;
         unset($validated['image'], $validated['discounted_price']);
@@ -140,9 +136,7 @@ class ProductController extends Controller
         $userCurrency = $user?->country?->currency ?? 'USD';
         $viewerCountryId = $user?->country_id ?? null;
 
-        $product->image_url = $product->image_public_id
-            ? $this->cloudinary->getImageUrl($product->image_public_id)
-            : null;
+        $product->image_url = $product->image_url;
 
         $discount = Discount::where('product_id', $product->id)
             ->where('to_country_id', $viewerCountryId)
@@ -169,33 +163,27 @@ class ProductController extends Controller
         return view('product.show', compact('product'));
     }
 
+    public function edit(string $id)
+    {
+        $product = Product::findOrFail($id);
+        $user = auth()->user();
 
+        if ($user->role === 'ruler') {
+            $countries = Country::all();
+        } elseif ($user->role === 'admin' && $user->country_id === $product->country_id) {
+            $countries = Country::where('id', $user->country_id)->get();
+        } else {
+            abort(403, 'Unauthorized access.');
+        }
 
-   public function edit(string $id)
-{
-    $product = Product::findOrFail($id);
-    $user = auth()->user();
+        $categories = Category::all();
 
-    if ($user->role === 'ruler') {
-        $countries = Country::all();
+        return view('product.edit', [
+            'product' => $product,
+            'categories' => $categories,
+            'countries' => $countries
+        ]);
     }
-    elseif ($user->role === 'admin' && $user->country_id === $product->country_id) {
-        $countries = Country::where('id', $user->country_id)->get();
-    }
-    else {
-        abort(403, 'Unauthorized access.');
-    }
-
-    $categories = Category::all();
-
-    return view('product.edit', [
-        'product' => $product,
-        'categories' => $categories,
-        'countries' => $countries
-    ]);
-}
-
-
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
@@ -209,36 +197,27 @@ class ProductController extends Controller
             'image'       => ['nullable', 'image', 'max:4096'],
         ]);
 
-        $productData = $validated;
+        $productData = collect($validated)->except('image')->toArray();
 
         $product = Product::findOrFail($id);
         $user = auth()->user();
 
         if ($user->role === 'ruler') {
             $countries = Country::all();
-        }
-        elseif ($user->role === 'admin' && $user->country_id === $product->country_id) {
+        } elseif ($user->role === 'admin' && $user->country_id === $product->country_id) {
             $countries = Country::where('id', $user->country_id)->get();
-        }
-        else {
+        } else {
             abort(403, 'Unauthorized access.');
         }
 
-
         if ($request->hasFile('image')) {
-            if ($product->image_public_id) {
-                $this->cloudinary->deleteImage($product->image_public_id);
-            }
-
-            $productData['image_public_id'] = $this->cloudinary->uploadImage($request->file('image'));
+            $productData['image_url'] = $this->cloudinary->uploadImage($request->file('image'));
         }
 
         $product->update($productData);
 
-
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
     }
-
 
     public function liveSearch(Request $request)
     {
@@ -263,6 +242,7 @@ class ProductController extends Controller
                 ];
             });
     }
+
     public function toggleBan($id)
     {
         $product = Product::findOrFail($id);
@@ -277,12 +257,10 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'تم تحديث حالة الحظر بنجاح.');
     }
 
-
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
         $product->delete();
         return redirect()->route('product.index')->with('success', 'Product deleted successfully!');
     }
-    
 }
