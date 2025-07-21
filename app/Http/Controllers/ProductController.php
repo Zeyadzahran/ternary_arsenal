@@ -65,15 +65,11 @@ class ProductController extends Controller
         // 7 =>  add to each product their img url , discount and their converted price
         foreach ($products as $product) {
             // img url 
-             $product->image_url = $product->image_url;
-
 
             // discount
             $discount = $discounts[$product->id] ?? null;
 
-            // $discount = Discount::where('product_id', $product->id)
-            //     ->where('to_country_id', $user?->country_id ?? null)
-            //     ->first();
+          
 
             $originalPrice = $product->price;
 
