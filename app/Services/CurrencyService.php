@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class CurrencyService
@@ -18,23 +19,37 @@ class CurrencyService
     {
         if ($from === $to) return $amount;
 
-        $response = Http::get($this->baseUrl . 'latest', [
-            'apikey' => $this->apiKey,
-            'base_currency' => $from,
-            'currencies' => $to
-        ]);
+        $rates = Cache::get("exchange_rates_{$from}");
 
-        $data = $response->json();
-        // dd($data);
-        
-        if (!isset($data['data'][$to])) {
-            logger()->error('Currency conversion failed.', ['response' => $data]);
+        if (!$rates) {
+            $rates = $this->fetchAndCacheRates($from);
+        }
+
+        if (!isset($rates[$to])) {
+            logger()->error('Currency conversion failed.', ['from' => $from, 'to' => $to, 'rates' => $rates]);
             return $amount;
         }
 
-        $rate = $data['data'][$to];
-        // dd($rate);
-
+        $rate = $rates[$to];
         return round($amount * $rate, 2);
+    }
+
+    protected function fetchAndCacheRates(string $base): array
+    {
+        $response = Http::get($this->baseUrl . 'latest', [
+            'apikey' => $this->apiKey,
+            'base_currency' => $base
+        ]);
+
+        $data = $response->json();
+
+        if (!isset($data['data']) || !is_array($data['data'])) {
+            logger()->error('Failed to fetch currency rates.', ['response' => $data]);
+            return [];
+        }
+
+        Cache::put("exchange_rates_{$base}", $data['data'], now()->addDay());
+
+        return $data['data'];
     }
 }
