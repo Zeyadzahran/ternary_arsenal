@@ -74,7 +74,7 @@ class ReportController extends Controller
 
         $file->move(storage_path('app/requests'), $filename);
 
-        $recipient = env('MAIL_FROM_ADDRESS');
+        $recipient = $request->email;
         $qrPath = storage_path('app/public/qr-code.png');
 
         QrCode::format('png')
