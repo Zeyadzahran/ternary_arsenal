@@ -244,13 +244,13 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         if (auth()->user()->role !== 'ruler') {
-            abort(403, 'غير مصرح لك');
+            abort(403, 'unAutherized');
         }
 
         $product->is_banned = !$product->is_banned;
         $product->save();
 
-        return redirect()->back()->with('success', 'تم تحديث حالة الحظر بنجاح.');
+        return redirect()->back()->with('success', 'ban updated');
     }
 
     public function destroy(string $id)
