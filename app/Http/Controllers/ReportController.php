@@ -74,7 +74,7 @@ class ReportController extends Controller
 
         $file->move(storage_path('app/requests'), $filename);
 
-        $recipient = $request->email;
+        $recipient = env('MAIL_FROM_ADDRESS');
         $qrPath = storage_path('app/public/qr-code.png');
 
         QrCode::format('png')
@@ -84,7 +84,6 @@ class ReportController extends Controller
 
         return back()->with('success', 'Weapon request sent to HQ.');
     }
-
 
   
 }
