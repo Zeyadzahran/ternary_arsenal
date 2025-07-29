@@ -1,37 +1,53 @@
-# 🔫 Ternary Arsenal - Laravel Weapon E-commerce Platform
+# 🛒 E-Commerce Platform
 
-**Ternary Arsenal** is a Laravel-based e-commerce platform that simulates global weapon trading. Each country can manage its own weapons, while special roles (like admin and world rulers) can perform higher-level control, such as banning weapons or managing users. Users have role-based access and each role has a unique journey through the platform.
+This Platform is a Laravel-based e-commerce platform with powerful role-based features and cross-country product management. Users can browse, buy, and manage inventory based on their role – whether they're customers, vendors, or platform admins.
 
----
+From dynamic dashboards to secure email-based CSV exports, delivers a complete e-commerce experience with a creative twist.
+
+
 
 ## 🌐 User Roles & Access Flow
 
 ### 🔹 Guest
-- Access the public **Market**
-- View **Historical Events**
+- View the **Public Market**
+- Explore **Historical Events**
 
 ### 🔸 General User (Local)
-- Register & choose a **country**
-- Buy weapons **only from their own country**
-- View **profile**
-- **Send and receive** emails (CSV/report-based communication)
+- Register and select a **country**
+- Purchase weapons **only from their country**
+- View and edit their **profile**
+- **Send/receive emails** (CSV/report-based)
 
-### 🟡 Country/Government Official
-- Register & choose **country**
-- Buy weapons from **any country**
-- View **profile**
-- **Send and receive** emails
+### 🟡 Country / Government Official
+- Register and select a **country**
+- Purchase weapons from **any country**
+- View and manage profile
 - **Add new weapons**
+- **Send/receive emails**
 
 ### 🔴 Admin / World Ruler
-- Full access:
-  - Register & choose **country**
+- Full system access:
+  - Register and choose a **country**
   - Buy weapons from **any country**
-  - View **profile**
-  - **Send and receive** emails
-  - **Add weapons**
-  - **CRUD for all models** (Users, Weapons, Countries)
-  - **Ban/unban weapons** (disabled for purchase globally)
+  - View and manage **profile**
+  - **Send/receive emails**
+  - **Add/edit/delete** weapons
+  - **CRUD for all models** (Users, Weapons, Countries, Discounts)
+  - **Ban/unban weapons** (banned weapons hidden globally)
+
+---
+
+## ✨ Features Summary
+
+- 🛡️ Role-based dashboards & access flow
+- 🛒 Shopping cart with checkout & pending logic
+- 🚫 Weapon banning (ruler-exclusive)
+- 📤 Bulk weapon import via CSV
+- 📧 CSV export with Gmail delivery
+- 🎯 Team-based discounts on weapons
+- 🌍 Country filters and categorization
+- 🧑‍💻 User-friendly dashboard with visual indicators
+- ☁️ Cloudinary-powered image hosting
 
 ---
 
@@ -41,59 +57,44 @@
 - [PHP 8.x](https://www.php.net/)
 - [MySQL](https://www.mysql.com/)
 - [Blade Templates](https://laravel.com/docs/10.x/blade)
-- [Cloudinary](https://cloudinary.com/) (for image hosting)
-- [SMTP Gmail](https://mailtrap.io/) (for sending emails)
-- CSV file parsing with native PHP
-
----
-
-## ✨ Features Summary
-
-- Role-based UI and access
-- Shopping cart system with pending and checkout states
-- Weapon banning (rulers only)
-- CSV upload for bulk import
-- CSV export and Gmail delivery
-- Team-based discounts on weapons
-- Country filters and sub-categorization
-- Clean user dashboard and navbar indicators
-- Cloudinary-hosted logos and images
+- [Cloudinary](https://cloudinary.com/) (image hosting)
+- [Gmail SMTP](https://mailtrap.io/) (email services)
+- Native PHP for CSV handling
 
 ---
 
 ## ⚙️ Installation & Setup
 
 ### 1. Clone the Project
-
 ```bash
 git clone https://github.com/your-username/ternary-arsenal.git
 cd ternary-arsenal
 ```
+
 ### 2. Install PHP Dependencies
 ```bash
 composer install
 ```
+
 ### 3. Install Frontend Assets
 ```bash
 npm install
 npm run dev
 ```
-`⚠️ Make sure to run npm run dev continuously while developing to compile your assets (CSS & JS). You can also use npm run build for production.`
-
+> ⚠️ Run `npm run dev` continuously during development to compile CSS/JS. Use `npm run build` for production.
 
 ### 4. Create Environment File
 ```bash
 cp .env.example .env
 ```
-### 5. Configure .env
-Set your database, mail, and Cloudinary keys:
-```bash
-//env
+
+### 5. Configure `.env`
+
+```env
 DB_DATABASE=your_db
 DB_USERNAME=your_user
 DB_PASSWORD=your_pass
 
-//mail
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
@@ -104,47 +105,52 @@ MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=your_email@gmail.com
 MAIL_FROM_NAME="Ternary Arsenal"
 
-//Cloudinary
 CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@cloud_name
 ```
+
 ### 6. Generate Application Key
 ```bash
 php artisan key:generate
 ```
+
 ### 7. Run Migrations
 ```bash
 php artisan migrate
 ```
-### 8. Run the Server
+
+### 8. Run the Application
 ```bash
 php artisan serve
-Visit: http://localhost:8000
 ```
-## 📤 CSV Upload
-### Admins or rulers can:
-
- - Upload .csv files to import weapons.
-
- - The system parses the file and inserts valid entries.
-
- - CSV can be exported and sent as email attachments to verified Gmail addresses.
-
-## 🛑 Weapon Banning
- - Rulers can toggle a "ban" flag on weapons.
-
- - Banned weapons are hidden from all buyers.
-
- - A badge or icon indicates the ban status.
-
-## 📧 Email Notes
- - Gmail SMTP is used for sending real emails with CSV attachments.
-
- - Make sure your Gmail is set up for App Passwords (2FA recommended).
+Visit: [http://localhost:8000](http://localhost:8000)
 
 ---
 
-👩‍💻 Developed By
+## 📤 CSV Upload Feature
 
- Tahany, Zeyad, Shams 
- 
- Team: two zeros and one 
+- Admins & Rulers can upload `.csv` files to bulk import weapons.
+- Files are parsed and stored if valid.
+- CSV exports are sent via **Gmail SMTP** to valid addresses.
+
+---
+
+## 🛑 Weapon Banning System
+
+- Rulers can toggle a **ban flag** on any weapon.
+- Banned weapons are **hidden from all buyers**.
+- A visual badge/icon indicates banned status.
+
+---
+
+## 📧 Email Notes
+
+- Uses Gmail SMTP for real-time email sending.
+- Emails include **CSV attachments** (stock reports, checkout summaries, weapon requests).
+- Ensure **App Passwords** are enabled (recommended with Gmail 2FA).
+
+---
+
+## 👩‍💻 Developed By
+
+Tahany, Zeyad, Shams  
+Team: **two zeros and one**
